@@ -17,8 +17,8 @@
     <Setting Name="previousFiles" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="previousDriver" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="driverObtainHandles" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="previousMethod" Type="System.String" Scope="User">
       <Value Profile="(Default)" />

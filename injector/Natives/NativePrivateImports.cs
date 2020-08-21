@@ -114,7 +114,7 @@ namespace injector
                         }
                     }
 
-                    IntPtr hProcess = OpenProcess((uint)ACCESS_MASK.PROCESS_QUERY_LIMITED_INFORMATION,          // Open process
+                    IntPtr hProcess = OpenProcess(ACCESS_MASK.PROCESS_QUERY_LIMITED_INFORMATION,          // Open process
                                                         false, (int)entry.th32ProcessID);
                     if (hProcess != IntPtr.Zero )
                     {

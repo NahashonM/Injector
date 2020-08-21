@@ -85,13 +85,13 @@ namespace injector.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string previousDriver {
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool driverObtainHandles {
             get {
-                return ((string)(this["previousDriver"]));
+                return ((bool)(this["driverObtainHandles"]));
             }
             set {
-                this["previousDriver"] = value;
+                this["driverObtainHandles"] = value;
             }
         }
         

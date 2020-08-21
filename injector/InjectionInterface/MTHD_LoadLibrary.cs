@@ -14,7 +14,7 @@ namespace injector.Tasks.Methods
 
         private bool GetProcessHandle()
         {
-            hProcess = Natives.OpenProcess(Natives.ACCESS_MASK.PROCESS_ALL_ACCESS,false,pid);
+            hProcess = Natives.OpenProcess(Natives.ACCESS_MASK.PROCESS_ALL_ACCESS,false, injectionModel.TargetPid);
             return false;
         }
 

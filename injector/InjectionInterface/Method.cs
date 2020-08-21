@@ -25,8 +25,8 @@ namespace injector.Tasks
         public string       InjectionMethod;
         public bool         HijackHandle;
         public bool         ElevateHandle;
-        /// <summary>Driver class to be used</summary>
-        public string       Driver;
+        /// <summary>Use driver to obtain handles</summary>
+        public bool         ObtainHandleViaDriver;
         /// <summary>Unload driver once file(s) are injected</summary>
         public bool         UnloadOnInject;
         /// <summary>List of path(s) to file(s) being injected </summary>

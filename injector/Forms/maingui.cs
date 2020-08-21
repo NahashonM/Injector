@@ -280,7 +280,7 @@ namespace injector
                 InjectionMethod = cboInjectionMethods.SelectedValue?.ToString(),
                 HijackHandle = chkHijackHandle.Checked,
                 ElevateHandle = chkElevateHandle.Checked,
-                Driver = cboDrivers.SelectedValue?.ToString(),
+                ObtainHandleViaDriver = chkDriverObtainHandle.Checked,
                 UnloadOnInject = chkUnloadAfterInject.Checked,
                 FilesList = files
             };
@@ -313,39 +313,49 @@ namespace injector
         /// </summary>
         private void LoadDefaultSettings()
         {
-            if(Properties.Settings.Default.isInjectionMode)
+            chkElevateHandle.Checked = Properties.Settings.Default.elevateHandle;
+            chkUnloadAfterInject.Checked = Properties.Settings.Default.unloadDriverOnInject;
+            chkHijackHandle.Checked = Properties.Settings.Default.hijackHandle;
+            chkDriverObtainHandle.Checked = Properties.Settings.Default.driverObtainHandles;
+
+            // TODO----
+            // Implement previous method history revert
+            //cboInjectionMethods. = Properties.Settings.Default.previousMethod;
+
+
+            if (Properties.Settings.Default.isInjectionMode)
             {
                 rdElevationMode.Checked = false;
                 rdInjectionMode.Checked = true;
+
+                string previousFiles = Properties.Settings.Default.previousFiles;
+
+                foreach (string file in previousFiles.Split('\n'))
+                {
+                    string[] entry = file.Split(';');
+                    if (entry.Count() > 1)
+                    {
+                        DataRow row = InjectionFiles.NewRow();
+                        row["inject"] = (entry[1] == "True") ? true : false;
+                        row["fileName"] = entry[0].Substring(entry[0].LastIndexOf('\\') + 1); ;
+                        row["filePath"] = entry[0];
+                        row["fileArch"] = Natives.GetImageArchitecture(entry[0]);
+
+                        InjectionFiles.Rows.Add(row);
+                    }
+                }
             }
             else
             {
                 rdElevationMode.Checked = true;
                 rdInjectionMode.Checked = false;
+
+                grpInjectionMethod.Enabled = false;
             }
-            chkElevateHandle.Checked = Properties.Settings.Default.elevateHandle;
-            chkUnloadAfterInject.Checked = Properties.Settings.Default.unloadDriverOnInject;
-            chkHijackHandle.Checked = Properties.Settings.Default.hijackHandle;
 
-            //cboDrivers.SelectedItem = Properties.Settings.Default.previousDriver;
-            //cboInjectionMethods. = Properties.Settings.Default.previousMethod;
 
-            string previousFiles = Properties.Settings.Default.previousFiles;
 
-            foreach (string file in previousFiles.Split('\n'))
-            {
-                string[] entry = file.Split(';');
-                if (entry.Count() > 1)
-                {
-                    DataRow row = InjectionFiles.NewRow();
-                    row["inject"] = (entry[1] == "True") ? true : false;
-                    row["fileName"] = entry[0].Substring(entry[0].LastIndexOf('\\') + 1); ;
-                    row["filePath"] = entry[0];
-                    row["fileArch"] = Natives.GetImageArchitecture(entry[0]);
 
-                    InjectionFiles.Rows.Add(row);
-                }
-            }
         }
 
 
@@ -369,7 +379,7 @@ namespace injector
             Properties.Settings.Default.hijackHandle = chkHijackHandle.Checked;
 
             Properties.Settings.Default.previousMethod = cboInjectionMethods.SelectedValue?.ToString();
-            Properties.Settings.Default.previousDriver = cboDrivers.SelectedValue?.ToString();
+            Properties.Settings.Default.driverObtainHandles = chkDriverObtainHandle.Checked;
 
             try {
                 Int32.Parse(lblPid.Text.Substring(0, lblPid.Text.IndexOf(' ')));
@@ -415,7 +425,6 @@ namespace injector
                 btnDeleteFile.Visible = false;
                 btnRefresh.Visible = true;
             }
-            cboDrivers.DataSource = AvailableDrivers;
         }
 
         /// <summary>
