@@ -95,17 +95,5 @@ namespace injector.Tasks
                 .Where(x => x.Name.Contains("MTHD_")).ToList())
                 InjectionMethods.Add(itype.Name.Substring(5).Replace('_', ' '));
         }
-
-        /// <summary>
-        /// Gives a list of drivers available for use... List is influenced by task selected
-        /// </summary>
-        /// <param name="Mode"></param>
-        /// <param name="AvailableDrivers"></param>
-        public static void QueryAvailableDrivers(ref List<string> AvailableDrivers, TASK_MODE mode)
-        {
-            AvailableDrivers.Clear();
-            AvailableDrivers.Add("kprocesshacker2");
-            AvailableDrivers.Add("capcom");
-        }
     }
 }

@@ -18,13 +18,16 @@ namespace injector
 
     public partial class maingui : Form
     {
-        private bool windowDragEvt = false;                 // Custom title bar mouse onmove event tracker
-        private int mouseX, mouseY;                        // Custom title bar Mouse position trackers
+        private enum APP_MODE { HandleElevation, FileInjection };
 
-        ProcessInfo SelectedProcess;                        // Process Picked by user
-        DataTable InjectionFiles;                         // Data source .. Files to be injected
-        List<string> InjectionMethods;                       // Data source .. Files to be injected
-        List<string> AvailableDrivers;                       // Data source .. Files to be injected
+        private bool    windowDragEvt = false;                 // Custom title bar mouse onmove event tracker
+        private int     mouseX, mouseY;                        // Custom title bar Mouse position trackers
+
+        ProcessInfo     SelectedProcess;                        // Process Picked by user
+        DataTable       fileDataTable;                         // Data source .. Files to be injected
+        DataTable       handleDataTable;                         // Data source .. Files to be injected
+        List<string>    InjectionMethods;                       // Data source .. Files to be injected
+        List<string>    AvailableDrivers;                       // Data source .. Files to be injected
 
         string[] accepted_extensions = { "exe", "dll" };
 
@@ -32,37 +35,82 @@ namespace injector
         {
             InitializeComponent();
 
+            // Init global data
             AvailableDrivers = new List<string>();
             InjectionMethods = new List<string>();
-            InjectionFiles = new DataTable();
+            fileDataTable = new DataTable();
+            handleDataTable = new DataTable();
 
-            //------------- Injection Files
-            InjectionFiles.Columns.Add("inject", typeof(bool));
-            InjectionFiles.Columns.Add("fileName", typeof(string));
-            InjectionFiles.Columns.Add("filePath", typeof(string));
-            InjectionFiles.Columns.Add("fileArch", typeof(string));
-
-            dtvFileSelections.DataSource = InjectionFiles;
-            dtvFileSelections.AutoGenerateColumns = false;
-
+            // Query available injection methods
             Tasks.Task.QueryAvailableInjectionMethods(ref InjectionMethods);
             cboInjectionMethods.DataSource = InjectionMethods;
 
-            //Tasks.Task.QueryAvailableDrivers(ref AvailableDrivers, Tasks.TASK_MODE.ELEVATION);
-            
+            // Init data tables
+            InitDataTables();
 
-            InitFormStyle();
+            // Load previous user configurations
             LoadDefaultSettings();
-
         }
 
         /// <summary>
-        /// Set Visual styles to the File datagrid view
+        /// Init the Data table column headers. 
         /// </summary>
-        public void InitFormStyle()
+        private void InitDataTables()
         {
-            dtvFileSelections.AutoGenerateColumns = false;
+            // Files data table
+            fileDataTable.Columns.Add("inject", typeof(bool));
+            fileDataTable.Columns.Add("fileName", typeof(string));
+            fileDataTable.Columns.Add("filePath", typeof(string));
+            fileDataTable.Columns.Add("fileArch", typeof(string));
 
+            // Handles data table
+            handleDataTable.Columns.Add("elevate", typeof(bool));
+            handleDataTable.Columns.Add("hValue", typeof(ulong));
+            handleDataTable.Columns.Add("grAccess", typeof(uint));
+            handleDataTable.Columns.Add("dsAccess", typeof(uint));
+        }
+
+
+        /// <summary>
+        /// Switch Data tables based on seleceted mode
+        /// </summary>
+        /// <param name="mode">APP_MODE.[injection|elevation]</param>
+        private void SwitchDataTable(APP_MODE mode)
+        {
+            if (mode == APP_MODE.FileInjection)
+            {
+                dtvFileSelections.DataSource = fileDataTable;
+                SetFileDataTableStyle();
+
+                // Connect event listeners
+                dtvFileSelections.DragDrop += DtvFileSelections_DragDrop;
+                dtvFileSelections.DragEnter += DtvFileSelections_DragEnter;
+                dtvFileSelections.MouseDoubleClick += DtvFileSelections_MouseDoubleClick;
+
+                // Allow user adding files
+                dtvFileSelections.AllowUserToDeleteRows = true;
+            }
+            else
+            {
+                dtvFileSelections.DataSource = handleDataTable;
+                SetHandleDataTableStyle();
+
+                // Disconnect event listeners
+                dtvFileSelections.DragDrop -= DtvFileSelections_DragDrop;
+                dtvFileSelections.DragEnter -= DtvFileSelections_DragEnter;
+                dtvFileSelections.MouseDoubleClick -= DtvFileSelections_MouseDoubleClick;
+
+                // prevent user adding files
+                dtvFileSelections.AllowUserToDeleteRows = false;
+            }
+        }
+    
+
+        /// <summary>
+        /// Set Visual styles for injection files datagrid view
+        /// </summary>
+        private void SetFileDataTableStyle()
+        {
             dtvFileSelections.Columns[0].HeaderText = "";
             dtvFileSelections.Columns[0].Resizable = DataGridViewTriState.False;
             dtvFileSelections.Columns[0].Width = 20;
@@ -88,6 +136,32 @@ namespace injector
         }
 
         /// <summary>
+        /// Set Visual styles for handles table
+        /// </summary>
+        private void SetHandleDataTableStyle()
+        {
+            dtvFileSelections.Columns[0].HeaderText = "";
+            dtvFileSelections.Columns[0].Resizable = DataGridViewTriState.False;
+            dtvFileSelections.Columns[0].Width = 20;
+
+            dtvFileSelections.Columns[1].HeaderText = "Handle value";
+            dtvFileSelections.Columns[1].Resizable = DataGridViewTriState.False;
+            dtvFileSelections.Columns[1].MinimumWidth = 100;
+            dtvFileSelections.Columns[1].Width = 120;
+            dtvFileSelections.Columns[1].ReadOnly = true;
+
+            dtvFileSelections.Columns[2].HeaderText = "Current Access";
+            dtvFileSelections.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dtvFileSelections.Columns[2].ReadOnly = true;
+
+
+            dtvFileSelections.Columns[3].HeaderText = "Desired Access";
+            dtvFileSelections.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dtvFileSelections.Columns[3].ReadOnly = false;
+        }
+
+
+        /// <summary>
         /// Add a file to the injection list
         /// </summary>
         /// <param name="fileList">list of files to be injected</param>
@@ -100,23 +174,25 @@ namespace injector
 
                 if (accepted_extensions.Contains<string>(extension.ToLower()))
                 {
-                    var rows = InjectionFiles.AsEnumerable().Where(r => r.Field<string>("filePath") == file);
+                    var rows = fileDataTable.AsEnumerable().Where(r => r.Field<string>("filePath") == file);
                     if (rows.Count() > 0)
                     {
                         MessageBox.Show("File Arleady Added");
                         continue;
                     }
 
-                    DataRow row = InjectionFiles.NewRow();
+                    DataRow row = fileDataTable.NewRow();
                     row["inject"] = true;
                     row["fileName"] = file.Substring(file.LastIndexOf('\\') + 1); ;
                     row["filePath"] = file;
                     row["fileArch"] = Natives.GetImageArchitecture(file);
 
-                    InjectionFiles.Rows.Add(row);
+                    fileDataTable.Rows.Add(row);
                 }
             }
         }
+
+
 
         /// <summary>
         /// CustomTitleBar_MouseDown
@@ -254,6 +330,8 @@ namespace injector
         }
 
 
+
+
         /// <summary>
         /// Calls for dispatch of injection task
         /// </summary>
@@ -261,7 +339,7 @@ namespace injector
         private void DispatchInjectionTask(int pid)
         {
             List<string> files = new List<string> { };
-            foreach (DataRow row in InjectionFiles.Rows)
+            foreach (DataRow row in fileDataTable.Rows)
             {
                 if ((bool)row["inject"] == true)
                     files.Add(row["filePath"].ToString());
@@ -323,41 +401,42 @@ namespace injector
             //cboInjectionMethods. = Properties.Settings.Default.previousMethod;
 
 
+            string previousFiles = Properties.Settings.Default.previousFiles;
+
+            foreach (string file in previousFiles.Split('\n'))
+            {
+                string[] entry = file.Split(';');
+                if (entry.Count() > 1)
+                {
+                    DataRow row = fileDataTable.NewRow();
+                    row["inject"] = (entry[1] == "True") ? true : false;
+                    row["fileName"] = entry[0].Substring(entry[0].LastIndexOf('\\') + 1); ;
+                    row["filePath"] = entry[0];
+                    row["fileArch"] = Natives.GetImageArchitecture(entry[0]);
+
+                    fileDataTable.Rows.Add(row);
+                }
+            }
+
+
             if (Properties.Settings.Default.isInjectionMode)
             {
+                SwitchDataTable(APP_MODE.FileInjection);
+
                 rdElevationMode.Checked = false;
                 rdInjectionMode.Checked = true;
 
-                string previousFiles = Properties.Settings.Default.previousFiles;
-
-                foreach (string file in previousFiles.Split('\n'))
-                {
-                    string[] entry = file.Split(';');
-                    if (entry.Count() > 1)
-                    {
-                        DataRow row = InjectionFiles.NewRow();
-                        row["inject"] = (entry[1] == "True") ? true : false;
-                        row["fileName"] = entry[0].Substring(entry[0].LastIndexOf('\\') + 1); ;
-                        row["filePath"] = entry[0];
-                        row["fileArch"] = Natives.GetImageArchitecture(entry[0]);
-
-                        InjectionFiles.Rows.Add(row);
-                    }
-                }
             }
             else
             {
+                SwitchDataTable(APP_MODE.HandleElevation);
+
                 rdElevationMode.Checked = true;
                 rdInjectionMode.Checked = false;
 
                 grpInjectionMethod.Enabled = false;
             }
-
-
-
-
         }
-
 
 
         private void Maingui_Load(object sender, EventArgs e)
@@ -390,7 +469,7 @@ namespace injector
             }
 
             string files = null;
-            foreach (DataRow row in InjectionFiles.Rows)
+            foreach (DataRow row in fileDataTable.Rows)
             {
                 files += row["filePath"].ToString() + ";"+ row["inject"].ToString() + "\n";
             }
@@ -398,8 +477,6 @@ namespace injector
             Properties.Settings.Default.previousFiles = files;
 
             Properties.Settings.Default.Save();
-            Properties.Settings.Default.Upgrade();
-
         }
 
         /// <summary>
@@ -411,16 +488,18 @@ namespace injector
         {
             if (grpInjectionMethod.Enabled = rdInjectionMode.Checked)
             {
+                SwitchDataTable(APP_MODE.FileInjection);
+
                 btnInject.Text = "Inject File";
-                Tasks.Task.QueryAvailableDrivers(ref AvailableDrivers, Tasks.TASK_MODE.INJECTION);
                 btnAddFile.Visible = true;
                 btnDeleteFile.Visible = true;
                 btnRefresh.Visible = false;
             }
             else
             {
+                SwitchDataTable(APP_MODE.HandleElevation);
+
                 btnInject.Text = "Elevate Handle";
-                Tasks.Task.QueryAvailableDrivers(ref AvailableDrivers, Tasks.TASK_MODE.ELEVATION);
                 btnAddFile.Visible = false;
                 btnDeleteFile.Visible = false;
                 btnRefresh.Visible = true;

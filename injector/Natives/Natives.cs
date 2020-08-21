@@ -55,7 +55,7 @@ namespace injector
         /// <param name="hObject">handle value</param>
         /// <returns></returns>
         [DllImport("kernel32.dll", ExactSpelling = true)]
-        private static extern bool CloseHandle(IntPtr hObject);
+        public static extern bool CloseHandle(IntPtr hObject);
 
 
 
