@@ -1,5 +1,8 @@
 .vs
-Injectordll/
 bin/
-injector/obj/
-injector/bin/
+UI/bin/
+UI/obj/
+Injector/bin/
+Injector/Debug/
+Injector/x86/
+Injector/x64/
