@@ -8,7 +8,8 @@
 #include <iostream>
 
 
-enum JOBTYPE {	Job_Inject, Job_Elevate };
+
+enum JOBTYPE {	Job_Inject, Job_Elevate, Job_Get_Process_Handles };
 
 struct InjectionModel
 {

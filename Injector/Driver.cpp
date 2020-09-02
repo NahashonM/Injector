@@ -10,7 +10,7 @@ Driver::Driver(const std::wstring& drvImageName, const std::wstring& drvServiceN
 	LPWSTR currentFolder = new wchar_t[MAX_PATH];
 	GetCurrentDirectoryW(MAX_PATH, currentFolder);
 
-	imageName = std::wstring(currentFolder) + L"\\" + drvImageName;
+	imagePath = std::wstring(currentFolder) + L"\\" + drvImageName;
 
 	delete[] currentFolder;
 }
@@ -19,8 +19,7 @@ Driver::Driver(const std::wstring& drvImageName, const std::wstring& drvServiceN
 
 bool Driver::LoadDriver()
 {
-
-	if (this->hDriver != INVALID_HANDLE_VALUE || this->GetDriverHandle())				// driver Loaded  and we got an handle to it
+	if (hDriver != INVALID_HANDLE_VALUE || this->GetDriverHandle())				// driver Loaded  and we got an handle to it
 		return true;
 	// Driver not loaded
 
@@ -32,7 +31,7 @@ bool Driver::LoadDriver()
 	{																										//------------ Create the driver service
 		hDriverSvc = CreateServiceW(hSCM, this->serviceName.c_str(), this->serviceName.c_str(),
 			SERVICE_START, SERVICE_KERNEL_DRIVER, SERVICE_DEMAND_START,
-			SERVICE_ERROR_IGNORE, this->imageName.c_str(), nullptr,
+			SERVICE_ERROR_IGNORE, this->imagePath.c_str(), nullptr,
 			nullptr, nullptr, nullptr, nullptr);
 		if (!hDriverSvc)																					//------------ Cannot create the service
 		{
@@ -82,11 +81,10 @@ bool Driver::LoadDriver()
 bool Driver::GetDriverHandle()
 {
 	/* Use WINAPI to get a handle to the driver */
-	this->hDriver = CreateFileW(this->deviceName.c_str(), GENERIC_READ | GENERIC_WRITE,
+	hDriver = CreateFileW(deviceName.c_str(), GENERIC_READ | GENERIC_WRITE,
 		0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
-	if (this->hDriver != INVALID_HANDLE_VALUE)						// We succeeded in getting a handle to the driver
-		return true;
+	if (hDriver && hDriver != INVALID_HANDLE_VALUE)	return true;				// We succeeded in getting a handle to the driver
 
 	/* Try Nt methods to get handle to the driver */
 	NTSTATUS status;
@@ -103,7 +101,7 @@ bool Driver::GetDriverHandle()
 		&objectAttributes, &isb, FILE_SHARE_READ | FILE_SHARE_WRITE,
 		FILE_NON_DIRECTORY_FILE | FILE_SYNCHRONOUS_IO_NONALERT);
 
-	if (status == STATUS_SUCCESS) {														// We got a handle to the driver
+	if(NT_SUCCESS(status)) {														// We got a handle to the driver
 		return true;
 	}
 

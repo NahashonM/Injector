@@ -1,6 +1,7 @@
 #include "JobDescriptor.h"
 
 
+
 JOBDESCRIPTOR::~JOBDESCRIPTOR()
 {
 }
@@ -14,15 +15,15 @@ void JOBDESCRIPTOR::CommandLineParser(const int argc, const char* argv[])
 {
 	int rawResourceIndex = -1;
 
-	for (int i = 1; i < argc; i++)  {
-		
+	for (int i = 1; i < argc; i++) {
+
 		if (argv[i][0] != '-')	break;						// Wrong parameter
 
 		char arg = tolower(argv[i][1]);
-		
+
 		if (arg == 't')											// Job type
 		{
-			jobType = (atoi(argv[i + 1]) == Job_Elevate) ? Job_Elevate : Job_Inject;
+			jobType = (JOBTYPE)atoi(argv[i + 1]);
 		}
 		else if (arg == 'p')									// target Pid
 		{
@@ -56,9 +57,13 @@ void JOBDESCRIPTOR::CommandLineParser(const int argc, const char* argv[])
 		i++;
 	}
 
-	if (rawResourceIndex >= 0)
+	if (rawResourceIndex >= 0) {
 		if (ParseResourceValues(std::string(argv[rawResourceIndex])))
 			isValidJob = true;
+
+	}else if (jobType == Job_Get_Process_Handles && targetPid){
+		isValidJob = true;
+	}
 
 }
 

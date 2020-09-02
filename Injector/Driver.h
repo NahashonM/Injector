@@ -14,6 +14,7 @@
 class Driver
 {
 private:
+	std::wstring imagePath;
 	std::wstring imageName;
 	std::wstring serviceName;
 	std::wstring deviceName;

@@ -66,6 +66,7 @@ namespace injector
             // Handles data table
             handleDataTable.Columns.Add("elevate", typeof(bool));
             handleDataTable.Columns.Add("hValue", typeof(ulong));
+            handleDataTable.Columns.Add("hName", typeof(string));
             handleDataTable.Columns.Add("grAccess", typeof(uint));
             handleDataTable.Columns.Add("dsAccess", typeof(uint));
         }
@@ -144,20 +145,26 @@ namespace injector
             dtvFileSelections.Columns[0].Resizable = DataGridViewTriState.False;
             dtvFileSelections.Columns[0].Width = 20;
 
-            dtvFileSelections.Columns[1].HeaderText = "Handle value";
+            dtvFileSelections.Columns[1].HeaderText = "Handle";
             dtvFileSelections.Columns[1].Resizable = DataGridViewTriState.False;
-            dtvFileSelections.Columns[1].MinimumWidth = 100;
-            dtvFileSelections.Columns[1].Width = 120;
+            dtvFileSelections.Columns[1].MinimumWidth = 40;
+            dtvFileSelections.Columns[1].Width = 40;
             dtvFileSelections.Columns[1].ReadOnly = true;
 
-            dtvFileSelections.Columns[2].HeaderText = "Current Access";
-            dtvFileSelections.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dtvFileSelections.Columns[2].HeaderText = "Name";
+            dtvFileSelections.Columns[2].Resizable = DataGridViewTriState.True;
+            dtvFileSelections.Columns[2].MinimumWidth = 150;
+            dtvFileSelections.Columns[2].Width = 200;
             dtvFileSelections.Columns[2].ReadOnly = true;
 
-
-            dtvFileSelections.Columns[3].HeaderText = "Desired Access";
+            dtvFileSelections.Columns[3].HeaderText = "Access";
             dtvFileSelections.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            dtvFileSelections.Columns[3].ReadOnly = false;
+            dtvFileSelections.Columns[3].ReadOnly = true;
+
+
+            dtvFileSelections.Columns[4].HeaderText = "N_Access";
+            dtvFileSelections.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dtvFileSelections.Columns[4].ReadOnly = false;
         }
 
 
@@ -189,6 +196,30 @@ namespace injector
 
                     fileDataTable.Rows.Add(row);
                 }
+            }
+        }
+
+
+        /// <summary>
+        /// Add a handle to the handle list
+        /// </summary>
+        /// <param name="handleValue">handle values [handle value ; granted access ; name]</param>
+        private void AddNewHandleToList(string handleValue)
+        {
+            // [	handle value ; granted access ; name	]
+            //------------------------------------------------
+            string[] values = handleValue.Split(';');
+            if (values.Length == 3)
+            {
+                DataRow row = handleDataTable.NewRow();
+
+                row["elevate"] = false;                                     // bool
+                row["hValue"] = values[0];                                  // ulong
+                row["hName"] = values[2];                                   // string
+                row["grAccess"] = values[1];                                // uint
+                row["dsAccess"] = values[1];                                // uint
+
+                handleDataTable.Rows.Add(row);
             }
         }
 
@@ -265,6 +296,7 @@ namespace injector
             lblPid.Text = SelectedProcess.Pid.ToString() + " : 0x" + SelectedProcess.Pid.ToString("X");
             lblName.Text = SelectedProcess.Name;
             lblArch.Text = SelectedProcess.Arch;
+
         }
 
         /// <summary>
@@ -341,7 +373,7 @@ namespace injector
             List<string> files = new List<string> { };
             foreach (DataRow row in fileDataTable.Rows)
             {
-                if ((bool)row["inject"] == true)
+                if ((bool)row["inject"] == true && (string)row["fileArch"] == lblArch.Text)
                     files.Add(row["filePath"].ToString());
             }
 
@@ -355,6 +387,7 @@ namespace injector
             Tasks.InjectionModel injectionModel = new Tasks.InjectionModel
             {
                 TargetPid = pid,
+                TargetArchitecture = lblArch.Text,
                 InjectionMethod = cboInjectionMethods.SelectedValue?.ToString(),
                 HijackHandle = chkHijackHandle.Checked,
                 ElevateHandle = chkElevateHandle.Checked,
@@ -493,7 +526,7 @@ namespace injector
                 btnInject.Text = "Inject File";
                 btnAddFile.Visible = true;
                 btnDeleteFile.Visible = true;
-                btnRefresh.Visible = false;
+                btnRefreshHandles.Visible = false;
             }
             else
             {
@@ -502,8 +535,20 @@ namespace injector
                 btnInject.Text = "Elevate Handle";
                 btnAddFile.Visible = false;
                 btnDeleteFile.Visible = false;
-                btnRefresh.Visible = true;
+                btnRefreshHandles.Visible = true;
             }
+        }
+
+
+        /// <summary>
+        /// Refresh handle list
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BtnRefreshHandles_Click(object sender, EventArgs e)
+        {
+            handleDataTable.Clear();
+            Tasks.Task.QueryProcessHandles(SelectedProcess.Pid, AddNewHandleToList);
         }
 
         /// <summary>

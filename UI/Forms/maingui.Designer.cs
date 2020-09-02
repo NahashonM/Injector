@@ -28,11 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             this.CustomTitleBar = new System.Windows.Forms.Panel();
             this.grpMode = new System.Windows.Forms.GroupBox();
             this.rdElevationMode = new System.Windows.Forms.RadioButton();
@@ -42,13 +42,14 @@
             this.btnClose = new System.Windows.Forms.PictureBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnInject = new System.Windows.Forms.Button();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.chkDriverObtainHandle = new System.Windows.Forms.CheckBox();
+            this.chkUnloadAfterInject = new System.Windows.Forms.CheckBox();
             this.grpInjectionMethod = new System.Windows.Forms.GroupBox();
-            this.cboInjectionMethods = new System.Windows.Forms.ComboBox();
             this.chkElevateHandle = new System.Windows.Forms.CheckBox();
+            this.cboInjectionMethods = new System.Windows.Forms.ComboBox();
             this.lblMethod = new System.Windows.Forms.Label();
             this.chkHijackHandle = new System.Windows.Forms.CheckBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.chkUnloadAfterInject = new System.Windows.Forms.CheckBox();
             this.panel4 = new System.Windows.Forms.Panel();
             this.Process = new System.Windows.Forms.GroupBox();
             this.lblArch = new System.Windows.Forms.Label();
@@ -59,18 +60,17 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.dtvFileSelections = new System.Windows.Forms.DataGridView();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.btnRefresh = new System.Windows.Forms.Button();
+            this.btnRefreshHandles = new System.Windows.Forms.Button();
             this.btnDeleteFile = new System.Windows.Forms.Button();
             this.btnAddFile = new System.Windows.Forms.Button();
-            this.chkDriverObtainHandle = new System.Windows.Forms.CheckBox();
             this.CustomTitleBar.SuspendLayout();
             this.grpMode.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.btnMinimize)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.InjectorBanner)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.btnClose)).BeginInit();
             this.panel1.SuspendLayout();
-            this.grpInjectionMethod.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.grpInjectionMethod.SuspendLayout();
             this.panel4.SuspendLayout();
             this.Process.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgProcessIcon)).BeginInit();
@@ -195,6 +195,37 @@
             this.btnInject.UseVisualStyleBackColor = true;
             this.btnInject.Click += new System.EventHandler(this.BtnInject_Click);
             // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.chkDriverObtainHandle);
+            this.groupBox1.Controls.Add(this.chkUnloadAfterInject);
+            this.groupBox1.Location = new System.Drawing.Point(3, 186);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(279, 36);
+            this.groupBox1.TabIndex = 2;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Driver";
+            // 
+            // chkDriverObtainHandle
+            // 
+            this.chkDriverObtainHandle.AutoSize = true;
+            this.chkDriverObtainHandle.Location = new System.Drawing.Point(12, 16);
+            this.chkDriverObtainHandle.Name = "chkDriverObtainHandle";
+            this.chkDriverObtainHandle.Size = new System.Drawing.Size(85, 17);
+            this.chkDriverObtainHandle.TabIndex = 8;
+            this.chkDriverObtainHandle.Text = "Get Handles";
+            this.chkDriverObtainHandle.UseVisualStyleBackColor = true;
+            // 
+            // chkUnloadAfterInject
+            // 
+            this.chkUnloadAfterInject.AutoSize = true;
+            this.chkUnloadAfterInject.Location = new System.Drawing.Point(133, 16);
+            this.chkUnloadAfterInject.Name = "chkUnloadAfterInject";
+            this.chkUnloadAfterInject.Size = new System.Drawing.Size(127, 17);
+            this.chkUnloadAfterInject.TabIndex = 7;
+            this.chkUnloadAfterInject.Text = "Unload after Injection";
+            this.chkUnloadAfterInject.UseVisualStyleBackColor = true;
+            // 
             // grpInjectionMethod
             // 
             this.grpInjectionMethod.Controls.Add(this.chkElevateHandle);
@@ -208,15 +239,6 @@
             this.grpInjectionMethod.TabStop = false;
             this.grpInjectionMethod.Text = "Injection Method";
             // 
-            // cboInjectionMethods
-            // 
-            this.cboInjectionMethods.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
-            this.cboInjectionMethods.FormattingEnabled = true;
-            this.cboInjectionMethods.Location = new System.Drawing.Point(60, 15);
-            this.cboInjectionMethods.Name = "cboInjectionMethods";
-            this.cboInjectionMethods.Size = new System.Drawing.Size(207, 21);
-            this.cboInjectionMethods.TabIndex = 2;
-            // 
             // chkElevateHandle
             // 
             this.chkElevateHandle.AutoSize = true;
@@ -226,6 +248,15 @@
             this.chkElevateHandle.TabIndex = 6;
             this.chkElevateHandle.Text = "Elevate Handle";
             this.chkElevateHandle.UseVisualStyleBackColor = true;
+            // 
+            // cboInjectionMethods
+            // 
+            this.cboInjectionMethods.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
+            this.cboInjectionMethods.FormattingEnabled = true;
+            this.cboInjectionMethods.Location = new System.Drawing.Point(60, 15);
+            this.cboInjectionMethods.Name = "cboInjectionMethods";
+            this.cboInjectionMethods.Size = new System.Drawing.Size(207, 21);
+            this.cboInjectionMethods.TabIndex = 2;
             // 
             // lblMethod
             // 
@@ -245,27 +276,6 @@
             this.chkHijackHandle.TabIndex = 0;
             this.chkHijackHandle.Text = "Hijack Handle";
             this.chkHijackHandle.UseVisualStyleBackColor = true;
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.chkDriverObtainHandle);
-            this.groupBox1.Controls.Add(this.chkUnloadAfterInject);
-            this.groupBox1.Location = new System.Drawing.Point(3, 186);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(279, 36);
-            this.groupBox1.TabIndex = 2;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Driver";
-            // 
-            // chkUnloadAfterInject
-            // 
-            this.chkUnloadAfterInject.AutoSize = true;
-            this.chkUnloadAfterInject.Location = new System.Drawing.Point(133, 16);
-            this.chkUnloadAfterInject.Name = "chkUnloadAfterInject";
-            this.chkUnloadAfterInject.Size = new System.Drawing.Size(127, 17);
-            this.chkUnloadAfterInject.TabIndex = 7;
-            this.chkUnloadAfterInject.Text = "Unload after Injection";
-            this.chkUnloadAfterInject.UseVisualStyleBackColor = true;
             // 
             // panel4
             // 
@@ -355,57 +365,57 @@
             this.dtvFileSelections.AllowDrop = true;
             this.dtvFileSelections.AllowUserToAddRows = false;
             this.dtvFileSelections.AllowUserToResizeRows = false;
-            dataGridViewCellStyle11.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
-            dataGridViewCellStyle11.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle11.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
-            dataGridViewCellStyle11.SelectionForeColor = System.Drawing.Color.Lime;
-            this.dtvFileSelections.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle11;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.Lime;
+            this.dtvFileSelections.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.dtvFileSelections.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
             this.dtvFileSelections.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dtvFileSelections.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.dtvFileSelections.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.Disable;
             this.dtvFileSelections.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
-            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle12.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            dataGridViewCellStyle12.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle12.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle12.NullValue = "n";
-            dataGridViewCellStyle12.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            dataGridViewCellStyle12.SelectionForeColor = System.Drawing.Color.Lime;
-            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dtvFileSelections.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle12;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle2.NullValue = "n";
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.Lime;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dtvFileSelections.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.dtvFileSelections.ColumnHeadersHeight = 20;
             this.dtvFileSelections.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle13.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
-            dataGridViewCellStyle13.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle13.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle13.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
-            dataGridViewCellStyle13.SelectionForeColor = System.Drawing.Color.Lime;
-            dataGridViewCellStyle13.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dtvFileSelections.DefaultCellStyle = dataGridViewCellStyle13;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.Lime;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dtvFileSelections.DefaultCellStyle = dataGridViewCellStyle3;
             this.dtvFileSelections.EnableHeadersVisualStyles = false;
             this.dtvFileSelections.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(52)))), ((int)(((byte)(52)))));
             this.dtvFileSelections.ImeMode = System.Windows.Forms.ImeMode.Off;
             this.dtvFileSelections.Location = new System.Drawing.Point(0, 6);
             this.dtvFileSelections.Name = "dtvFileSelections";
             this.dtvFileSelections.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle14.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
-            dataGridViewCellStyle14.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle14.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle14.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
-            dataGridViewCellStyle14.SelectionForeColor = System.Drawing.Color.Lime;
-            dataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dtvFileSelections.RowHeadersDefaultCellStyle = dataGridViewCellStyle14;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.Color.Lime;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dtvFileSelections.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
             this.dtvFileSelections.RowHeadersVisible = false;
             this.dtvFileSelections.RowHeadersWidth = 4;
             this.dtvFileSelections.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            dataGridViewCellStyle15.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
-            dataGridViewCellStyle15.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle15.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
-            dataGridViewCellStyle15.SelectionForeColor = System.Drawing.Color.Lime;
-            this.dtvFileSelections.RowsDefaultCellStyle = dataGridViewCellStyle15;
+            dataGridViewCellStyle5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
+            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.Color.Lime;
+            this.dtvFileSelections.RowsDefaultCellStyle = dataGridViewCellStyle5;
             this.dtvFileSelections.RowTemplate.DefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
             this.dtvFileSelections.RowTemplate.DefaultCellStyle.ForeColor = System.Drawing.Color.White;
             this.dtvFileSelections.RowTemplate.DefaultCellStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
@@ -422,7 +432,7 @@
             // 
             // panel3
             // 
-            this.panel3.Controls.Add(this.btnRefresh);
+            this.panel3.Controls.Add(this.btnRefreshHandles);
             this.panel3.Controls.Add(this.btnDeleteFile);
             this.panel3.Controls.Add(this.btnAddFile);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -431,14 +441,15 @@
             this.panel3.Size = new System.Drawing.Size(408, 37);
             this.panel3.TabIndex = 4;
             // 
-            // btnRefresh
+            // btnRefreshHandles
             // 
-            this.btnRefresh.Location = new System.Drawing.Point(160, 8);
-            this.btnRefresh.Name = "btnRefresh";
-            this.btnRefresh.Size = new System.Drawing.Size(104, 23);
-            this.btnRefresh.TabIndex = 2;
-            this.btnRefresh.Text = "Refresh Handles";
-            this.btnRefresh.UseVisualStyleBackColor = true;
+            this.btnRefreshHandles.Location = new System.Drawing.Point(160, 8);
+            this.btnRefreshHandles.Name = "btnRefreshHandles";
+            this.btnRefreshHandles.Size = new System.Drawing.Size(104, 23);
+            this.btnRefreshHandles.TabIndex = 2;
+            this.btnRefreshHandles.Text = "Refresh Handles";
+            this.btnRefreshHandles.UseVisualStyleBackColor = true;
+            this.btnRefreshHandles.Click += new System.EventHandler(this.BtnRefreshHandles_Click);
             // 
             // btnDeleteFile
             // 
@@ -457,16 +468,6 @@
             this.btnAddFile.TabIndex = 0;
             this.btnAddFile.Text = "Add File";
             this.btnAddFile.UseVisualStyleBackColor = true;
-            // 
-            // chkDriverObtainHandle
-            // 
-            this.chkDriverObtainHandle.AutoSize = true;
-            this.chkDriverObtainHandle.Location = new System.Drawing.Point(12, 16);
-            this.chkDriverObtainHandle.Name = "chkDriverObtainHandle";
-            this.chkDriverObtainHandle.Size = new System.Drawing.Size(85, 17);
-            this.chkDriverObtainHandle.TabIndex = 8;
-            this.chkDriverObtainHandle.Text = "Get Handles";
-            this.chkDriverObtainHandle.UseVisualStyleBackColor = true;
             // 
             // maingui
             // 
@@ -491,10 +492,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.InjectorBanner)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.btnClose)).EndInit();
             this.panel1.ResumeLayout(false);
-            this.grpInjectionMethod.ResumeLayout(false);
-            this.grpInjectionMethod.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.grpInjectionMethod.ResumeLayout(false);
+            this.grpInjectionMethod.PerformLayout();
             this.panel4.ResumeLayout(false);
             this.Process.ResumeLayout(false);
             this.Process.PerformLayout();
@@ -536,7 +537,7 @@
         private System.Windows.Forms.GroupBox grpMode;
         private System.Windows.Forms.RadioButton rdElevationMode;
         private System.Windows.Forms.RadioButton rdInjectionMode;
-        private System.Windows.Forms.Button btnRefresh;
+        private System.Windows.Forms.Button btnRefreshHandles;
         private System.Windows.Forms.CheckBox chkDriverObtainHandle;
     }
 }
