@@ -3,11 +3,31 @@
 #include <Windows.h>
 #include <string>
 #include <fstream>
+#include <vector>
+#include <algorithm>
 
+
+#include "Driver.h"
 #include "ntdefs.h"
+#include "Registry.h"
+#include "PhysicalMemoryRes.h"
+
+
+
+typedef struct
+{
+	LARGE_INTEGER	RegionStart;
+	uint64_t		RegionSize;
+}MEMORY_MAP_ENTRY, * PMEMORY_MAP_ENTRY;
+
+
+typedef std::vector<MEMORY_MAP_ENTRY>	MEMORY_MAP;
+
+
 
 namespace util
 {
+
 
 	/// <summary> Dumps raw binary data to file </summary>
 	/// <param name="fileName"> Name of the output biary file </param>
@@ -79,5 +99,36 @@ namespace util
 	/// <param name="enable"> true by default: enable </param>
 	/// <returns> bool </returns>
 	bool SetPrivilege(LPCWSTR privilegeName, bool enable = true);
+
+
+
+
+	/// <summary> Get physical memory layout information.</summary>
+	/// <param name="memoryMap"> Name of the privilege to be set </param>
+	/// <returns> bool: [true: success]</returns>
+	bool GetPhysicalMemoryMappingInformation(MEMORY_MAP* memoryMap);
+
+
+
+	/// <summary>Gets the virtual address of the eprocess structure of the given process</summary>
+	/// <param name="processPid">Pid of process </param>
+	/// <returns>virtual address of eprocess structure</returns>
+	void* ProcessEprocessVirtualAddress(uint32_t processPid);
+
+
+	/// <summary> Get handle to physical memory.</summary>
+	/// <param name="pHandle"> pointer to handle to store the handle</param>
+	/// <returns> bool: [true: success]</returns>
+	bool GetPhysicalMemoryHandle(PHANDLE pHandle);
+
+
+	/// <summary> Translate a virtual address to a physical address</summary>
+	/// <param name="dirBase"> the page table directory base from the eprocess or CR3 register </param>
+	/// <param name="virtualAddress"> The virtual address to be translated </param>
+	/// <param name="FnReadPhysicalAddress"> A function that can read a physical memory address </param>
+	/// <returns>[void*]</returns>
+	void* TranslateVirtualAddress(void* dirBase, void* virtualAddress, Driver *driverObject);
+
+
 
 };

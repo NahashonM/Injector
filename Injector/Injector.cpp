@@ -11,16 +11,18 @@ int main(const int argc, const char* argv[] )
 	// Process Commandline arguments
 	//--------------------------------
 	JOBDESCRIPTOR job(argc, argv);
-	
-	// Get debugging privilege
-	//--------------------------------
-	if (util::SetPrivilege(SE_DEBUG_NAME, true)) {
-	}
-	//std::cout << "Debug privileges obtained" << std::endl;
 
+	
+	// Get debugging and loaddriver privileges
+	//--------------------------------------------
+	if (!util::SetPrivilege(SE_DEBUG_NAME, true) 
+		|| !util::SetPrivilege(SE_LOAD_DRIVER_NAME, true)) 
+	{
+	}
 
 	// Dispatch job to handler
 	//-----------------------------------------------------------
+	std::cout << "Begin\n";
 
 	if (job.IsValid())
 	{
@@ -29,6 +31,7 @@ int main(const int argc, const char* argv[] )
 		switch (job.JobType())
 		{
 		case Job_Elevate:
+			ElevateProcessHandles(&job);
 			break;
 		case Job_Inject:
 			break;
@@ -39,5 +42,7 @@ int main(const int argc, const char* argv[] )
 	} else {
 		//std::cout << "Job is not valid" << std::endl;
 	}
+
+	std::cout << "End\n";
 }
 

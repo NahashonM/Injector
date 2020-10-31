@@ -37,6 +37,9 @@
     <Filter Include="Header Files\NtDefinitions\KERNEL STRUCTS">
       <UniqueIdentifier>{779a7592-f298-404e-8454-e3bd74b95c58}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Workers">
+      <UniqueIdentifier>{55aeb1a9-9cdb-4670-9c27-df5d7d0fdc36}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Injector.cpp">
@@ -60,8 +63,11 @@
     <ClCompile Include="Registry.cpp">
       <Filter>Source Files\Registry</Filter>
     </ClCompile>
-    <ClCompile Include="jobHandlers.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ElevateProcessHandles.cpp">
+      <Filter>Source Files\Workers</Filter>
+    </ClCompile>
+    <ClCompile Include="GetProcessHandles.cpp">
+      <Filter>Source Files\Workers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

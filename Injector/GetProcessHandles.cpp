@@ -12,7 +12,7 @@ bool GetProcessHandles(JOBDESCRIPTOR *job)
 	KProcessHacker kph;
 	kph.InitDriver();
 
-	HANDLE searchHandle = kph.KPHOpenProcess(PROCESS_QUERY_INFORMATION, 4);
+	HANDLE searchHandle = kph.KPHOpenProcess(PROCESS_QUERY_INFORMATION, job->Pid());
 	std::string handleDesc;
 
 	// Get List of all system handles
@@ -34,7 +34,7 @@ bool GetProcessHandles(JOBDESCRIPTOR *job)
 		// [	handle value ; granted access ; name	]
 		//------------------------------------------------
 		//handleDesc = util::NumToAscii(sysHandle->HandleValue, 16) + ";";
-		std::cout << sysHandle->HandleValue << ";" << sysHandle->GrantedAccess << ";";
+		
 
 		// Get name of handle object
 		//-------------------------------
@@ -43,14 +43,15 @@ bool GetProcessHandles(JOBDESCRIPTOR *job)
 		{
 			if (pObjName->Name.Length > 0)			// Named
 			{
+				std::cout << sysHandle->HandleValue << ";" << sysHandle->GrantedAccess << ";";
 				std::cout << util::ToA(pObjName->Name.Buffer) << "\n";
-			} else {								// Unnamed
-				std::cout << "unnamed" << "\n";
-			}
+			} //else {								// Unnamed
+				//std::cout << "unnamed" << "\n";
+			//}
 			free(pObjName);
-		} else {						// Cannot Get Name
-			std::cout << "<error>" << "\n";
-		}
+		} //else {						// Cannot Get Name
+			//std::cout << "<error>" << "\n";
+		//}
 	}
 
 	if (pHandles) free(pHandles);																// Clean up

@@ -11,13 +11,12 @@
 
 enum JOBTYPE {	Job_Inject, Job_Elevate, Job_Get_Process_Handles };
 
-struct InjectionModel
-{
-	
-	bool         UnloadOnInject;
-	/// <summary>List of path(s) to file(s) being injected </summary>
-	std::vector<std::string> FilesList;
-};
+
+typedef struct _HANDLE_NEW_ACCESS_ {
+	HANDLE		hValue;
+	ACCESS_MASK desiredAccess;
+}HANDLE_NEW_ACCESS;
+
 
 
 class JOBDESCRIPTOR
@@ -37,50 +36,65 @@ private:
 	void*		injectionResources;		// -r <summary>List of path(s) to file(s) to be injected or handles to  be elevated </summary>
 
 
-
 	bool		ParseResourceValues(std::string rawString);
 
+	void		ParseHandleArguments(std::string rawString, PHANDLE hValue, ACCESS_MASK* desiredAccess);
+
 public:
-	JOBDESCRIPTOR() : isValidJob(false) {};
-	JOBDESCRIPTOR(const int argc, const char* argv[]) : isValidJob(false)  { CommandLineParser(argc, argv); }
+
+	std::vector<std::string>		filesList;
+	std::vector<HANDLE_NEW_ACCESS>	handlesList;
+
+
+	JOBDESCRIPTOR() : isValidJob(false) {}
+	JOBDESCRIPTOR(const int argc, const char* argv[]) : isValidJob(false) { CommandLineParser(argc, argv); }
 
 	void CommandLineParser(const int argc, const char* argv[]);
 
 	/// <summary> Returs true if job is valid otherwise False </summary>
 	/// <returns> [bool] </returns>
-	bool IsValid() { return isValidJob; }
+	bool IsValid();
 
 	/// <summary> Returns the pid of the target process </summary>
 	/// <returns> [uint32_t] </returns>
-	uint32_t	Pid() { return targetPid; };
+	uint32_t	Pid();
 
 	/// <summary> Returns the type of job dispatched</summary>
 	/// <returns> [JOBTYPE] </returns>
-	JOBTYPE		JobType() { return jobType; };
+	JOBTYPE		JobType();
 
 	/// <summary> Returns the type of job dispatched</summary>
 	/// <returns> [bool] </returns>
-	bool		HijackHandle() { return hijackHandle; };
+	bool		HijackHandle();
 
 	/// <summary> Returns true if the job requires handles to the taret to be elevated </summary>
 	/// <returns> [bool] </returns>
-	bool		ElevateHandle() { return elevateHandle; };
+	bool		ElevateHandle();
 
 	/// <summary> Returns true if the job requires the driver to be unloaded once done, otherwise its unloaded </summary>
 	/// <returns> [bool] </returns>
-	bool		UnloadDriverOnInject() { return unloadDriverOnInject; };
+	bool		UnloadDriverOnInject();
 
 	/// <summary> Returns true if the job requires use of the driver to obtain handles to target via driver.</summary>
 	/// <returns> [bool] </returns>
-	bool		ObtainHandleViaDriver() { return obtainHandleViaDriver; };
+	bool		ObtainHandleViaDriver();
 
 	/// <summary> Returns true if the job requires use of the driver to obtain handles to target via driver.</summary>
 	/// <returns> [std::string] </returns>
-	std::string	InjectionMethod() { return injectionMethod;  };
+	std::string	InjectionMethod();
 
-	/// <summary> Returns a vector of files or handles depending on the job.</summary>
-	/// <returns> [void*] casting to [std::vector<HANDLE>] or [std::vector<std::string>] may be needed</returns>
-	void*		InjectionResources() { return injectionResources;  }
+	/// <summary> Returns the number of files/handles specified in the job.</summary>
+	/// <returns> int </returns>
+	int ResourceCount();
+
+	/// <summary> Returns a vector<sting> of files on the job.</summary>
+	/// <returns>std::vector<std::string></returns>
+	std::string		Files();
+
+	/// <summary> Returns a HANDLE_NEW_ACCESS of handles.</summary>
+	/// <returns> HANDLE_NEW_ACCESS</returns>
+	HANDLE_NEW_ACCESS	Handle(int index);
+
 
 
 	~JOBDESCRIPTOR();

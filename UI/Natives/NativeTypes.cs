@@ -43,7 +43,7 @@ namespace injector
         }
 
         /// <summary> Process Architecture </summary>
-        private enum IMAGE_FILE_MACHINE : ushort
+        public enum IMAGE_FILE_MACHINE : ushort
         {
             IMAGE_FILE_MACHINE_UNKNOWN = 0x0,
             IMAGE_FILE_MACHINE_AM33 = 0x1d3,
@@ -131,7 +131,7 @@ namespace injector
 
 
         [StructLayout(LayoutKind.Sequential)]
-        private struct SHFILEINFO
+        public struct SHFILEINFO
         {
             public IntPtr hIcon;
             public IntPtr iIcon;

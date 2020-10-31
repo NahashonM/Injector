@@ -7,6 +7,11 @@
 #include "ntdefs.h"
 
 
+
+#define	KEY_PHYSICAL_MEMORY_MAP				L"\\Registry\\Machine\\HARDWARE\\RESOURCEMAP\\System Resources\\Physical Memory"
+#define	KEY_PHYSICAL_MEMORY_MAP_VALUE_NAME	L".Translated"
+
+
 namespace reg
 {
 
@@ -112,6 +117,10 @@ namespace reg
 		(HANDLE KeyHandle, PUNICODE_STRING ValueName,
 			KEY_VALUE_INFORMATION_CLASS KeyValueInformationClass, PVOID KeyValueInformation,
 			ULONG KeyValueInformationLength, OUT PULONG ResultLength);
+
+
+
+
 
 	static class Key
 	{

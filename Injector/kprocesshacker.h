@@ -9,6 +9,7 @@
 #include "PhysicalMemoryRes.h"
 
 #include "kph_types.h"
+#include "kph_types.h"
 
 
 #define KPH_FILE_NAME		L"kprocesshacker.sys"
@@ -16,9 +17,6 @@
 #define KPH_DEVICE_NAME		L"\\Device\\kprocesshacker2"
 #define KPH_DEVICE_TYPE		(0x9999)
 
-
-#define	KEY_PHYSICAL_MEMORY_MAP				L"\\Registry\\Machine\\HARDWARE\\RESOURCEMAP\\System Resources\\Physical Memory"
-#define	KEY_PHYSICAL_MEMORY_MAP_VALUE_NAME	L".Translated"
 
 
 #define SYSTEM_PID					4
@@ -28,7 +26,7 @@
 
 
 
-class KProcessHacker : Driver
+class KProcessHacker : public Driver
 {
 private:
 	bool driverImagePresent;
@@ -43,10 +41,6 @@ private:
 	/// <returns> bool: [true: success]</returns>
 	bool GetHandleToPhysicalMemory();
 
-
-	/// <summary> Get physical memory layout information.</summary>
-	/// <returns> bool: [true: success]</returns>
-	bool GetPhysicalMemoryMappingInformation();
 
 
 	/// <summary> Finds a handles to system objects </summary>
@@ -89,7 +83,6 @@ private:
 	/// <returns> bool </returns>
 	bool KPHReadWritePhysicalAddress(void* physicalAddress, size_t size, void* inOutBuf, bool read = true);
 
-
 public:
 	KProcessHacker();
 
@@ -117,9 +110,7 @@ public:
 	/// <param name="outBuffer"> _OUT_ Output Buffer </param>
 	/// <param name="size"> _IN_ Size to read </param>
 	/// <returns> bool </returns>
-	bool KPHReadPhysicalAddr(void* physicalAddress, void* outBuffer, size_t size) {
-		return KPHReadWritePhysicalAddress(physicalAddress, size, outBuffer, true);
-	}
+	bool ReadPhysicalAddr(void* physicalAddress, void* outBuffer, size_t size);
 
 
 	/// <summary> Write to a physical memory address </summary>
@@ -127,9 +118,7 @@ public:
 	/// <param name="inBuffer"> _IN_ Input Buffer </param>
 	/// <param name="size"> _IN_ Size of data to write </param>
 	/// <returns> bool </returns>
-	bool KPHWritePhysicalAddr(void* physicalAddress, void* inBuffer, size_t size) {
-		return KPHReadWritePhysicalAddress(physicalAddress, size, inBuffer, false);
-	}
+	bool WritePhysicalAddr(void* physicalAddress, void* inBuffer, size_t size);
 
 
 	/// <summary> Query information about an object via driver </summary>

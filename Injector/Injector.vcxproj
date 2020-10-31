@@ -169,9 +169,10 @@
   <ItemGroup>
     <ClCompile Include="cpuzdrvr.cpp" />
     <ClCompile Include="Driver.cpp" />
+    <ClCompile Include="ElevateProcessHandles.cpp" />
     <ClCompile Include="Injector.cpp" />
     <ClCompile Include="JobDescriptor.cpp" />
-    <ClCompile Include="jobHandlers.cpp" />
+    <ClCompile Include="GetProcessHandles.cpp" />
     <ClCompile Include="kprocesshacker.cpp" />
     <ClCompile Include="Registry.cpp" />
     <ClCompile Include="Util.cpp" />

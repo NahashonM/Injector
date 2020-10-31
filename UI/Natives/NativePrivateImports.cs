@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32.SafeHandles;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -16,14 +17,6 @@ namespace injector
     {
 
         #region PRIVATE_IMPORTS_FROM_KERNEL32_AND_PSAPI
-
-        [DllImport("psapi.dll", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Auto)]
-        private static extern uint GetModuleFileNameEx(IntPtr hProcess, IntPtr hModule, StringBuilder lpFilename, uint nSize);
-
-        [DllImport("kernel32.dll", SetLastError = true, CallingConvention = CallingConvention.Winapi)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool IsWow64Process2(IntPtr hProcess, ref IMAGE_FILE_MACHINE pProcessMachine, ref IMAGE_FILE_MACHINE pNativeMachine);
-
 
         [DllImport("kernel32", SetLastError = true, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
         private static extern IntPtr CreateToolhelp32Snapshot([In]SNAPSHOT_TYPE dwFlags, [In]int th32ProcessID);
@@ -73,6 +66,8 @@ namespace injector
         /// <returns></returns>
         private static bool EnumerateProcess(EnumProcess_Callback enumCallBack, UInt32 procPID = 0, string procName = "", ENUMERATION_MODE mode = ENUMERATION_MODE.FIND_ALL)
         {
+            Contract.Requires(enumCallBack != null);
+
             bool findMode = (mode != ENUMERATION_MODE.FIND_ALL) ? true : false;
             bool findByName = (mode == ENUMERATION_MODE.FIND_BY_NAME) ? true : false;
             bool status = false;
@@ -85,8 +80,7 @@ namespace injector
             {
                 PROCESSENTRY32 entry        = new PROCESSENTRY32 { };
                 entry.dwSize                = (uint)Marshal.SizeOf(typeof(PROCESSENTRY32));
-                StringBuilder processPath   = new StringBuilder(260);
-                bool is64BitProcess         = false;
+
                 ProcessInfo processInfo = new ProcessInfo();
 
                 bool validEntry = Process32First(hSnap, ref entry);                    // Get first entry in the snapshot
@@ -114,29 +108,7 @@ namespace injector
                         }
                     }
 
-                    IntPtr hProcess = OpenProcess(ACCESS_MASK.PROCESS_QUERY_LIMITED_INFORMATION,          // Open process
-                                                        false, (int)entry.th32ProcessID);
-                    if (hProcess != IntPtr.Zero )
-                    {
-                        GetModuleFileNameEx(hProcess, (IntPtr)0, processPath, 260);                             // Get Path to Process Image
-                        IMAGE_FILE_MACHINE processMachine = 0, nativeMachine = 0;
-                        if (IsWow64Process2(hProcess, ref processMachine, ref nativeMachine))                   // Get architecture of process
-                        {
-
-                            // TODO.... Refine this block
-                            is64BitProcess = (processMachine == IMAGE_FILE_MACHINE.IMAGE_FILE_MACHINE_AMD64) ?
-                                true : (processMachine == IMAGE_FILE_MACHINE.IMAGE_FILE_MACHINE_I386) ?
-                                false : (processMachine == IMAGE_FILE_MACHINE.IMAGE_FILE_MACHINE_UNKNOWN) ?
-                                (nativeMachine == IMAGE_FILE_MACHINE.IMAGE_FILE_MACHINE_AMD64) ? true : false : false;
-                        }
-                        else
-                            is64BitProcess = false;
-
-
-                        CloseHandle(hProcess);
-                    }
-
-                    processInfo.updateInfo(entry.th32ProcessID, pName, processPath.ToString(), (is64BitProcess) ?"x86_64":"x86");
+                    processInfo.updateInfo(entry.th32ProcessID, pName);
                     enumCallBack(processInfo);                                                                   // Call the callback
 
                     validEntry = Process32Next(hSnap, ref entry);                                               // Get next entry in the snapshot

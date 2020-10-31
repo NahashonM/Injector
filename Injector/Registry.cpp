@@ -1,6 +1,7 @@
 #include "Registry.h"
 
 
+
 bool reg::Key::QueryRegistryKeyValue(LPCWSTR registryKey, LPCWSTR valueName, PVOID* destinationBuffer, KEY_VALUE_INFORMATION_CLASS infoClass)
 {
 	_NtOpenKey NtOpenKey = (_NtOpenKey)util::GetExportFunctionAddress(L"ntdll.dll", "NtOpenKey");

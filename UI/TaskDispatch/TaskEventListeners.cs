@@ -14,18 +14,50 @@ namespace injector.Tasks
     /// </summary>
     static partial class Task
     {
- 
-        private static void OnHandleReadEventListener(object sender, DataReceivedEventArgs args)
+
+        private static void outputReadEventListener(object sender, DataReceivedEventArgs args)
         {
             if (args.Data != null && args.Data.Length > 0)
-                onHandleReadCallback(args.Data);
+            {
+                if (args.Data == "Begin") {
+                
+                }else if(args.Data == "End") {
+                    process.CancelOutputRead();
+                    process.CancelErrorRead();
+                    process.Close();
+                    
+                    isTaskRunning = false;
+                    onTaskEndCallback?.Invoke(taskType, 100);
+                } else {
+                    if(taskType == TASK_MODE.QUERY_HANDLES)
+                        onHandleReadCallback(args.Data);
+                    else if(taskType == TASK_MODE.QUERY_METHODS)
+                        onMethodReadCallback(args.Data);
+                }
+            }
         }
 
 
-        private static void OnMethodReadEventListener(object sender, DataReceivedEventArgs args)
+
+
+        private static void errorReadEventListener(object sender, DataReceivedEventArgs args)
         {
-            if (args.Data != null && args.Data.Length > 0)
-                onMethodReadCallback(args.Data);
+
+                
+        }
+
+
+        private static void OnProcessExitedEventListener(object sender, EventArgs e)
+        {
+            if (isTaskRunning)
+            {
+                isTaskRunning = false;
+                process.CancelOutputRead();
+                process.CancelErrorRead();
+                onTaskEndCallback?.Invoke(taskType, 100);
+            }
+
+            
         }
     }
 }

@@ -73,13 +73,6 @@ void JOBDESCRIPTOR::CommandLineParser(const int argc, const char* argv[])
 /// <returns> true if valid resources values were found.. File paths are not validated</returns>
 bool JOBDESCRIPTOR::ParseResourceValues(std::string rawString)
 {
-	if (jobType == Job_Elevate)
-		injectionResources = new std::vector<HANDLE>;
-	else if (jobType == Job_Inject)
-		injectionResources = new std::vector<std::string>;
-	else
-		return false;
-
 	int cIndex = 0, pIndex = -1; bool status = true;
 	while (status)
 	{
@@ -93,11 +86,14 @@ bool JOBDESCRIPTOR::ParseResourceValues(std::string rawString)
 
 		if (cIndex != pIndex) {
 			if (jobType == Job_Elevate) {
-				HANDLE hValue = (HANDLE)atoll(rawString.substr(cIndex, pIndex - cIndex).c_str());
-				if(hValue > 0)
-					((std::vector<HANDLE>*)injectionResources)->push_back(hValue);
+				HANDLE hValue; ACCESS_MASK desiredAccess;
+				ParseHandleArguments( rawString.substr(cIndex, pIndex - cIndex).c_str(), &hValue, &desiredAccess);
+
+				if(hValue > 0 && desiredAccess >= 0 )
+					handlesList.push_back({ hValue , desiredAccess });
+
 			} else if (jobType == Job_Inject) {
-				((std::vector<std::string>*)injectionResources)->push_back(rawString.substr(cIndex, pIndex - cIndex));
+				filesList.push_back(rawString.substr(cIndex, (size_t)pIndex - cIndex));
 			}
 		}
 
@@ -105,13 +101,55 @@ bool JOBDESCRIPTOR::ParseResourceValues(std::string rawString)
 	}
 
 	if (jobType == Job_Elevate) {
-		if (((std::vector<HANDLE>*)injectionResources)->size())
+		if (handlesList.size())
 			return true;
 	} else if (jobType == Job_Inject){
-		if (((std::vector<std::string>*)injectionResources)->size())
+		if (filesList.size())
 			return true;
 	}
 
 	return false;
 }
+
+
+/// <summary> Passes handle value and its new desired access </summary>
+/// <param name="rawString"> Raw handle string separated by a ';' </param>
+/// <param name="hValue"> _OUT_ [PHANDLE] Pointer to handle value </param>
+/// <param name="desiredAccess">  _OUT_ [ACCESS_MASK] pointer to desired access value </param>
+void JOBDESCRIPTOR::ParseHandleArguments(std::string rawString, PHANDLE hValue, ACCESS_MASK* desiredAccess)
+{
+	if (rawString.length() > 0)
+	{
+		int firstOfSC = rawString.find_first_of(";");
+
+		if (firstOfSC == rawString.length() || firstOfSC < 0)
+		{
+			*hValue = (HANDLE)atoi(rawString.c_str());
+			*desiredAccess = PROCESS_ALL_ACCESS;
+		} else {
+			*hValue = (HANDLE)atoi(rawString.substr(0,firstOfSC).c_str());
+			*desiredAccess  = (ACCESS_MASK)atoi(rawString.substr(firstOfSC+1).c_str());
+		}
+	}else {
+		*hValue = 0;
+	}
+	
+}
+
+
+int			JOBDESCRIPTOR::ResourceCount() { return (jobType == Job_Elevate) ? handlesList.size() : filesList.size(); }
+
+
+bool		JOBDESCRIPTOR::IsValid() { return isValidJob; }
+uint32_t	JOBDESCRIPTOR::Pid() {	return targetPid; }
+JOBTYPE		JOBDESCRIPTOR::JobType() { return jobType; }
+bool		JOBDESCRIPTOR::HijackHandle() { return hijackHandle; }
+bool		JOBDESCRIPTOR::ElevateHandle() { return elevateHandle; }
+bool		JOBDESCRIPTOR::UnloadDriverOnInject() { return unloadDriverOnInject; }
+bool		JOBDESCRIPTOR::ObtainHandleViaDriver() { return obtainHandleViaDriver; }
+std::string	JOBDESCRIPTOR::InjectionMethod() { return injectionMethod; }
+
+
+std::string			JOBDESCRIPTOR::Files() { return this->filesList[0];  }
+HANDLE_NEW_ACCESS	JOBDESCRIPTOR::Handle(int index) { return handlesList[index]; }
 

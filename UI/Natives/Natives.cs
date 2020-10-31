@@ -3,8 +3,7 @@ using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
-
-
+using System.Text;
 
 namespace injector
 {
@@ -57,6 +56,28 @@ namespace injector
         [DllImport("kernel32.dll", ExactSpelling = true)]
         public static extern bool CloseHandle(IntPtr hObject);
 
+
+        /// <summary>
+        /// Get path to the image of a processes module
+        /// </summary>
+        /// <param name="hProcess"> _IN_ handle to the process</param>
+        /// <param name="hModule"> _IN_ handle to the module whose path is needed [0=> main exe]</param>
+        /// <param name="lpFilename"> _OUT_ Name of file</param>
+        /// <param name="nSize"> _IN_ size of name variable</param>
+        /// <returns></returns>
+        [DllImport("psapi.dll", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Auto)]
+        public static extern uint GetModuleFileNameEx(IntPtr hProcess, IntPtr hModule, StringBuilder lpFilename, uint nSize);
+
+        /// <summary>
+        /// Get architecture of a process
+        /// </summary>
+        /// <param name="hProcess"> _IN_ Handle to the process</param>
+        /// <param name="pProcessMachine">_OUT_ The architecture the file is written for</param>
+        /// <param name="pNativeMachine">_OUT_ The processsor architecture</param>
+        /// <returns></returns>
+        [DllImport("kernel32.dll", SetLastError = true, CallingConvention = CallingConvention.Winapi)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool IsWow64Process2(IntPtr hProcess, ref IMAGE_FILE_MACHINE pProcessMachine, ref IMAGE_FILE_MACHINE pNativeMachine);
 
 
         #endregion

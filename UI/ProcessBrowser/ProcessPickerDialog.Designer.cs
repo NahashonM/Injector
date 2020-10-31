@@ -34,12 +34,13 @@
             this.customTitleBar = new System.Windows.Forms.Panel();
             this.btnClose = new System.Windows.Forms.PictureBox();
             this.pnlRefineSearch = new System.Windows.Forms.Panel();
+            this.chkFilterSystemProcesses = new System.Windows.Forms.CheckBox();
+            this.btnSelectProcess = new System.Windows.Forms.Button();
+            this.lblTxtFilter = new System.Windows.Forms.Label();
             this.txtFilterString = new System.Windows.Forms.TextBox();
+            this.btnRefreshProcesses = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.btnRefreshProcesses = new System.Windows.Forms.Button();
-            this.lblTxtFilter = new System.Windows.Forms.Label();
-            this.btnSelectProcess = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.procListView)).BeginInit();
             this.customTitleBar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.btnClose)).BeginInit();
@@ -88,7 +89,7 @@
             this.procListView.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.procListView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.procListView.ShowEditingIcon = false;
-            this.procListView.Size = new System.Drawing.Size(499, 387);
+            this.procListView.Size = new System.Drawing.Size(499, 356);
             this.procListView.TabIndex = 0;
             this.procListView.DoubleClick += new System.EventHandler(this.BtnSelectProcess_Click);
             this.procListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ProcListView_KeyDown);
@@ -122,6 +123,7 @@
             // 
             // pnlRefineSearch
             // 
+            this.pnlRefineSearch.Controls.Add(this.chkFilterSystemProcesses);
             this.pnlRefineSearch.Controls.Add(this.btnSelectProcess);
             this.pnlRefineSearch.Controls.Add(this.lblTxtFilter);
             this.pnlRefineSearch.Controls.Add(this.txtFilterString);
@@ -129,8 +131,38 @@
             this.pnlRefineSearch.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlRefineSearch.Location = new System.Drawing.Point(0, 26);
             this.pnlRefineSearch.Name = "pnlRefineSearch";
-            this.pnlRefineSearch.Size = new System.Drawing.Size(499, 87);
+            this.pnlRefineSearch.Size = new System.Drawing.Size(499, 118);
             this.pnlRefineSearch.TabIndex = 2;
+            // 
+            // chkFilterSystemProcesses
+            // 
+            this.chkFilterSystemProcesses.AutoSize = true;
+            this.chkFilterSystemProcesses.Location = new System.Drawing.Point(15, 57);
+            this.chkFilterSystemProcesses.Name = "chkFilterSystemProcesses";
+            this.chkFilterSystemProcesses.Size = new System.Drawing.Size(137, 17);
+            this.chkFilterSystemProcesses.TabIndex = 4;
+            this.chkFilterSystemProcesses.Text = "Filter System Processes";
+            this.chkFilterSystemProcesses.UseVisualStyleBackColor = true;
+            this.chkFilterSystemProcesses.CheckStateChanged += new System.EventHandler(this.ChkFilterSystemProcesses_CheckStateChanged);
+            // 
+            // btnSelectProcess
+            // 
+            this.btnSelectProcess.Location = new System.Drawing.Point(183, 89);
+            this.btnSelectProcess.Name = "btnSelectProcess";
+            this.btnSelectProcess.Size = new System.Drawing.Size(104, 23);
+            this.btnSelectProcess.TabIndex = 3;
+            this.btnSelectProcess.Text = "Select Process";
+            this.btnSelectProcess.UseVisualStyleBackColor = true;
+            this.btnSelectProcess.Click += new System.EventHandler(this.BtnSelectProcess_Click);
+            // 
+            // lblTxtFilter
+            // 
+            this.lblTxtFilter.AutoSize = true;
+            this.lblTxtFilter.Location = new System.Drawing.Point(12, 24);
+            this.lblTxtFilter.Name = "lblTxtFilter";
+            this.lblTxtFilter.Size = new System.Drawing.Size(81, 13);
+            this.lblTxtFilter.TabIndex = 2;
+            this.lblTxtFilter.Text = "Filter Processes";
             // 
             // txtFilterString
             // 
@@ -139,6 +171,16 @@
             this.txtFilterString.Size = new System.Drawing.Size(188, 20);
             this.txtFilterString.TabIndex = 0;
             this.txtFilterString.TextChanged += new System.EventHandler(this.TxtFilterString_TextChanged);
+            // 
+            // btnRefreshProcesses
+            // 
+            this.btnRefreshProcesses.Location = new System.Drawing.Point(15, 89);
+            this.btnRefreshProcesses.Name = "btnRefreshProcesses";
+            this.btnRefreshProcesses.Size = new System.Drawing.Size(118, 23);
+            this.btnRefreshProcesses.TabIndex = 1;
+            this.btnRefreshProcesses.Text = "Refresh Process List";
+            this.btnRefreshProcesses.UseVisualStyleBackColor = true;
+            this.btnRefreshProcesses.Click += new System.EventHandler(this.BtnRefreshProcesses_Click);
             // 
             // panel1
             // 
@@ -152,39 +194,10 @@
             // 
             this.panel2.Controls.Add(this.procListView);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(0, 113);
+            this.panel2.Location = new System.Drawing.Point(0, 144);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(499, 387);
+            this.panel2.Size = new System.Drawing.Size(499, 356);
             this.panel2.TabIndex = 4;
-            // 
-            // btnRefreshProcesses
-            // 
-            this.btnRefreshProcesses.Location = new System.Drawing.Point(12, 52);
-            this.btnRefreshProcesses.Name = "btnRefreshProcesses";
-            this.btnRefreshProcesses.Size = new System.Drawing.Size(118, 23);
-            this.btnRefreshProcesses.TabIndex = 1;
-            this.btnRefreshProcesses.Text = "Refresh Process List";
-            this.btnRefreshProcesses.UseVisualStyleBackColor = true;
-            this.btnRefreshProcesses.Click += new System.EventHandler(this.BtnRefreshProcesses_Click);
-            // 
-            // lblTxtFilter
-            // 
-            this.lblTxtFilter.AutoSize = true;
-            this.lblTxtFilter.Location = new System.Drawing.Point(12, 24);
-            this.lblTxtFilter.Name = "lblTxtFilter";
-            this.lblTxtFilter.Size = new System.Drawing.Size(81, 13);
-            this.lblTxtFilter.TabIndex = 2;
-            this.lblTxtFilter.Text = "Filter Processes";
-            // 
-            // btnSelectProcess
-            // 
-            this.btnSelectProcess.Location = new System.Drawing.Point(183, 52);
-            this.btnSelectProcess.Name = "btnSelectProcess";
-            this.btnSelectProcess.Size = new System.Drawing.Size(104, 23);
-            this.btnSelectProcess.TabIndex = 3;
-            this.btnSelectProcess.Text = "Select Process";
-            this.btnSelectProcess.UseVisualStyleBackColor = true;
-            this.btnSelectProcess.Click += new System.EventHandler(this.BtnSelectProcess_Click);
             // 
             // ProcessPickerDialog
             // 
@@ -222,5 +235,6 @@
         private System.Windows.Forms.Label lblTxtFilter;
         private System.Windows.Forms.Button btnRefreshProcesses;
         private System.Windows.Forms.Button btnSelectProcess;
+        private System.Windows.Forms.CheckBox chkFilterSystemProcesses;
     }
 }

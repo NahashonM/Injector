@@ -70,4 +70,13 @@ namespace nt
 			ULONG_PTR ZeroBits, SIZE_T CommitSize, PLARGE_INTEGER SectionOffset, PSIZE_T ViewSize,
 			SECTION_INHERIT InheritDisposition, ULONG AllocationType, ULONG Win32Protect);
 
+
+	/// <summary> Open a handle for an existing section object </summary>
+	/// <param name="SectionHandle">  Pointer to a HANDLE variable that receives a handle to the section object </param>
+	/// <param name="DesiredAccess">  Specifies an ACCESS_MASK value that determines the requested access to the object </param>
+	/// <param name="ObjectAttributes"> Pointer to an OBJECT_ATTRIBUTES structure that specifies the object name and other attributes </param>
+	/// <param name="Win32Protect"> ? </param>
+	/// <returns> NTSTATUS 0:STATUS_SUCCESS</returns>
+	typedef NTSTATUS(NTAPI* _NtOpenSection)
+		(PHANDLE SectionHandle, ACCESS_MASK DesiredAccess, POBJECT_ATTRIBUTES ObjectAttributes);
 };

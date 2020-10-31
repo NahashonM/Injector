@@ -20,6 +20,13 @@ namespace injector.Tasks
     public delegate void OnMethodReadCallback(string handleValue);
 
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="errorCode"></param>
+    public delegate void OnTaskEndCallback(TASK_MODE task, int errorCode);
+
+
 
     /// <summary>
     /// Job type
@@ -57,6 +64,22 @@ namespace injector.Tasks
     }
 
 
+    /// <summary>
+    /// Struct to represent new handle access_mask for an Elevation task 
+    /// </summary>
+    public struct NewHandleValue
+    {
+        /// <summary>
+        /// Value of the handle
+        /// </summary>
+        public IntPtr  hValue;
+
+        /// <summary>
+        /// Permissions for the new handle
+        /// </summary>
+        public uint    AcessMask;
+    }
+
 
 
     /// <summary>
@@ -66,8 +89,8 @@ namespace injector.Tasks
     {
         /// <summary> Pid of Process whose handle(s) is being elevated </summary>
         public int ProcessID;
-        /// <summary> List of handle(s) to be elevated </summary>
-        public List<uint> Handles;
+        /// <summary> List of handle(s) to be elevated [handle,value]</summary>
+        public List<NewHandleValue> Handles;
     }
 
 
@@ -83,9 +106,9 @@ namespace injector.Tasks
         /// <returns></returns>
         private static string GenerateCommandLineArguments(ref InjectionModel injectionModel)
         {
-            string cmdArgs = "-t 0";                                                    // job Type
+            string cmdArgs = "-t " + ((ushort)TASK_MODE.INJECTION).ToString();          // job Type
             cmdArgs += " -p " + injectionModel.TargetPid.ToString();                    // TargetPid
-            cmdArgs += " -h " + ((injectionModel.HijackHandle) ? "1" : "0");             // HijackHandle [1 : true / 0 : false]
+            cmdArgs += " -h " + ((injectionModel.HijackHandle) ? "1" : "0");            // HijackHandle [1 : true / 0 : false]
             cmdArgs += " -e " + ((injectionModel.ElevateHandle) ? "1" : "0");           // ElevateHandle [0 : true / 1 : false]
             cmdArgs += " -u " + ((injectionModel.ObtainHandleViaDriver) ? "1" : "0");   // UnloadDriverOnInject [0 : true / 1 : false]
             cmdArgs += " -o " + ((injectionModel.UnloadOnInject) ? "1" : "0");          // ObtainHandleViaDriver [0 : true / 1 : false]
@@ -107,12 +130,12 @@ namespace injector.Tasks
         /// <returns>parsed string</returns>
         private static string GenerateCommandLineArguments(ref ElevationModel elevationModel)
         {
-            string cmdArgs = "-t 1";                                                    // job Type
+            string cmdArgs = "-t " + ((ushort)TASK_MODE.ELEVATION).ToString();          // job Type
             cmdArgs += " -p " + elevationModel.ProcessID.ToString();                    // TargetPid
             cmdArgs += " -r ";                                                          // InjectionResources [csv list]
 
-            foreach (uint handle in elevationModel.Handles)
-                cmdArgs += handle.ToString() + ",";
+            foreach (NewHandleValue handle in elevationModel.Handles)
+                cmdArgs += handle.hValue.ToString() + ";" + handle.AcessMask.ToString() + ",";
 
             return cmdArgs;
         }

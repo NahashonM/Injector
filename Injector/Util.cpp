@@ -250,3 +250,196 @@ bool util::SetPrivilege(LPCWSTR privilegeName, bool enable)
 	CloseHandle(hToken);
 	return true;
 }
+
+
+
+
+
+
+
+bool util::GetPhysicalMemoryMappingInformation(MEMORY_MAP* memoryMap)
+{
+	reg::PKEY_VALUE_PARTIAL_INFORMATION buffer = nullptr;
+	if (!reg::Key::QueryRegistryKeyValue(KEY_PHYSICAL_MEMORY_MAP, KEY_PHYSICAL_MEMORY_MAP_VALUE_NAME, (void**)& buffer, reg::KeyValuePartialInformation))
+		return false;
+
+	pcm::PCM_FULL_RESOURCE_DESCRIPTOR pcmResDesc = ((pcm::PCM_RESOURCE_LIST)buffer->Data)->List;
+	pcm::PCM_PARTIAL_RESOURCE_LIST pcmPartialList = &(pcmResDesc[0].PartialResourceList);
+	pcm::PCM_PARTIAL_RESOURCE_DESCRIPTOR pcmResource = pcmPartialList->PartialDescriptors;
+
+	// Init the memory map
+	//--------------------------
+	if (memoryMap == nullptr) * memoryMap = {};
+
+	memoryMap->clear();
+	uint64_t memorySize = 0;
+
+	for (int i = 0; i < pcmPartialList->Count; i++)
+	{
+		switch (pcmResource[i].Type)
+		{
+		case pcm::CmResourceTypeMemory:
+			memoryMap->push_back(
+				MEMORY_MAP_ENTRY{ pcmResource[i].u.Memory.Start , pcmResource[i].u.Memory.Length }
+			);
+			break;
+
+		case pcm::CmResourceTypeMemoryLarge:
+			if (CM_RESOURCE_MEMORY_LARGE_40(pcmResource[i].Flags))	// max len 0x0000 00FF FFFF FF00
+				memorySize = ((uint64_t)pcmResource[i].u.Memory40.Length40) << 8;
+			else if (CM_RESOURCE_MEMORY_LARGE_48(pcmResource[i].Flags))	// max len  0x0000 FFFF FFFF 0000
+				memorySize = ((uint64_t)pcmResource[i].u.Memory48.Length48) << 16;
+			else if (CM_RESOURCE_MEMORY_LARGE_64(pcmResource[i].Flags))	// max len 0xFFFF FFFF 0000 0000
+				memorySize = ((uint64_t)pcmResource[i].u.Memory64.Length64) << 32;
+
+			memoryMap->push_back(MEMORY_MAP_ENTRY{ pcmResource[i].u.Memory.Start , memorySize });
+			break;
+
+		
+		}
+
+	}
+
+	free(buffer);
+
+	if (memoryMap->size()) {
+		std::sort(memoryMap->begin(), memoryMap->end(),
+			[](MEMORY_MAP_ENTRY & a, const MEMORY_MAP_ENTRY & b) {
+				return a.RegionStart.QuadPart < b.RegionStart.QuadPart;
+			}
+		);
+
+		return true;
+	}
+	return false;
+}
+
+
+
+void* util::ProcessEprocessVirtualAddress(uint32_t processPid)
+{
+	//Get handle to process
+	//---------------------
+	HANDLE	hProcess = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, false, processPid);
+	void* eProcessVAddr = nullptr;
+
+	if (hProcess > 0)
+	{
+		// Query handle information since it leaks eprocess address
+		//-----------------------------------------------------------
+		nt::SYSTEM_HANDLE_INFORMATION handleInfor;
+		if (util::GetHandleInfor(hProcess, GetCurrentProcessId(), &handleInfor))
+			eProcessVAddr = handleInfor.Object;
+
+		// Close Process handle
+		//----------------------
+		CloseHandle(hProcess);
+	}
+
+	return eProcessVAddr;
+}
+
+
+/// <summary> Translate a virtual address to a physical address</summary>
+/// <param name="dirBase"> the page table directory base from the eprocess or CR3 register </param>
+/// <param name="virtualAddress"> The virtual address to be translated </param>
+/// <param name="FnReadPhysicalAddress"> A function that can read a physical memory address </param>
+/// <returns>[void*]</returns>
+void* util::TranslateVirtualAddress(void* dirBase, void* virtualAddress, Driver *driverObject)
+{
+	if(driverObject == nullptr) return nullptr;
+
+	try {
+		USHORT pageMapLevel4 = ((uint64_t)virtualAddress >> 39) & 0x1FF;	// Page Directory Pointer  [ 39 - 47 ]	(9 bits)
+		USHORT pageDirPtr = ((uint64_t)virtualAddress >> 30) & 0x1FF;		// Page Directory [ 30 - 38 ]			(9 bits)
+		USHORT pageDir = ((uint64_t)virtualAddress >> 21) & 0x1FF;			// Page Table [ 21 - 29 ]				(9 bits)
+		USHORT pageTable = ((uint64_t)virtualAddress >> 12) & 0x1FF;		// Page Table Entry [ 12 - 20 ]			(9 bits)
+		USHORT pageOffset = (uint64_t)virtualAddress & 0xFFF;				// Page Offset [ 0 - 11 ]				(12 bits)
+
+																//  Root structure of paging hierachy (40bits)
+		dirBase = (void*)((uint64_t)dirBase & 0xFFFFFFF000);	//  Physical Address at CR3 or _KPROCESS structure of _EPROCESS
+																//  Each entry is a pointer to a Page Directory Pointer Table
+
+		// An entry in the Page Map Level 4 structure is a Page Directory Pointer Table (PDPT)
+		//-------------------------------------------------------------------------------------
+		void* PML4E;
+		if (!driverObject->ReadPhysicalAddr(
+			(void*)((uint64_t)dirBase + (pageMapLevel4 * sizeof(void*))), &PML4E, sizeof(void*)))
+			return nullptr;
+		if (!PML4E)	return nullptr;
+
+		// An Entry in the PDPT points to a Page Directory(PD)
+		//----------------------------------------------------
+		void* PDPTE;
+		if (!driverObject->ReadPhysicalAddr(
+			(void*)(((uint64_t)PML4E & 0xFFFFFFFFFF000) + (pageDirPtr * sizeof(void*))), &PDPTE, sizeof(void*)))
+			return nullptr;
+		if (!PDPTE)	return nullptr;
+
+
+		// If the PDPTE’s PS flag is 1, the PDPTE maps a 1-GByte page.
+		// The final physical address is : {51-30 (PDPTE)} {29:0 (virtualAddress) }
+		//----------------------------------------------------------------------------
+		if (((uint64_t)PDPTE & (1 << 7)) != 0)
+			return (void*)(((uint64_t)PDPTE & 0xFFFFFC0000000) + ((uint64_t)virtualAddress & 0x3FFFFFFF));
+
+
+		// if PS bit is 0. The PDPTE refs a Page Directory Table
+		//----------------------------------------------------------------------------
+		void* PDE;
+		if (!driverObject->ReadPhysicalAddr(
+			(void*)(((uint64_t)PDPTE & 0xFFFFFFFFFF000) + (pageDir * sizeof(void*))), &PDE, sizeof(void*)))
+			return 0;
+		if (!PDE)	return 0;
+
+		// If the PDPTE’s PS flag is 1, the PDPTE maps a 2-MByte page. 
+		// physical address is : {51 - 21 (PDE)} {20:0 (virtualAddress) }.
+		//---------------------------------------------------------------
+		if (((uint64_t)PDE & (1 << 7)) != 0)
+			return (void*)(((uint64_t)PDE & 0xFFFFFFFE00000) + ((uint64_t)virtualAddress & 0x1FFFFF));
+
+
+		// if PS bit is 0. The PDE refs a Page Table
+		// -----------------------------------------------
+		void* PTE;
+		if (!driverObject->ReadPhysicalAddr(
+			(void*)(((uint64_t)PDE & 0xFFFFFFFFFF000) + (pageTable * sizeof(void*))), &PTE, sizeof(void*)))
+			return 0;
+		if (!PTE)	return 0;
+
+		// the PTE maps a 4-KByte page.
+		// The physical address is c: {51-12 (PTE)} {11:0 (virtualAddress) }.
+		//-----------------------------------------------------------------------
+		return (void*)(((uint64_t)PTE & 0xFFFFFFFFFF000) + pageOffset);
+
+	} catch (_NOT_IMPLEMENTED_EXCEPTION_ e) {
+		return nullptr;
+	}
+}
+
+
+
+
+bool util::GetPhysicalMemoryHandle(PHANDLE pHandle)
+{
+	if (pHandle == nullptr) return false;
+
+	nt::_NtOpenSection NtOpenSection = (nt::_NtOpenSection)util::GetExportFunctionAddress(L"ntdll", "NtOpenSection");
+	if (NtOpenSection == nullptr) return false;
+
+	UNICODE_STRING wsMemoryDevice;
+	OBJECT_ATTRIBUTES oObjAttrs;
+
+	*pHandle = INVALID_HANDLE_VALUE;
+
+	RtlInitUnicodeString(&wsMemoryDevice, L"\\Device\\PhysicalMemory");
+	InitializeObjectAttributes(&oObjAttrs, &wsMemoryDevice, OBJ_CASE_INSENSITIVE, NULL, NULL);
+
+	NTSTATUS status = NtOpenSection(pHandle, READ_CONTROL, &oObjAttrs);
+	if (!NT_SUCCESS(
+		status
+	) || *pHandle <= 0)
+		return false;
+
+	return true;
+}

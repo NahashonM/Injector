@@ -1,7 +1,5 @@
 #pragma once
 
-#define MEMORY_READ_WRITE_ALIGNMENT	0x8
-
 
 #define KPH_DEVICE_TYPE				(0x9999)
 #define KPH_CTL_CODE(x)				CTL_CODE(KPH_DEVICE_TYPE, 0x800 + x, METHOD_NEITHER, FILE_ANY_ACCESS)
@@ -53,12 +51,5 @@ typedef enum _KPH_OBJECT_INFORMATION_CLASS : uint64_t
 #define MEMORY_MAP_END(x, _mem_map_)			(_mem_map_[x].RegionStart.QuadPart + _mem_map_[x].RegionSize-1)
 
 
-typedef struct
-{
-	LARGE_INTEGER	RegionStart;
-	uint64_t		RegionSize;
-}MEMORY_MAP_ENTRY, * PMEMORY_MAP_ENTRY;
 
-
-typedef std::vector<MEMORY_MAP_ENTRY>	MEMORY_MAP;
 typedef	std::vector<HANDLE>				HANDLE_LIST;

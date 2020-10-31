@@ -25,7 +25,7 @@ bool KProcessHacker::InitDriver()
 bool KProcessHacker::InitPhysicalMemory()
 {
 	if (GetHandleToPhysicalMemory()) {
-		if (!GetPhysicalMemoryMappingInformation())
+		if (!util::GetPhysicalMemoryMappingInformation(&memoryMap))
 		{
 			CloseHandle(hPhysicalMemory); return false;
 		}
@@ -63,58 +63,6 @@ bool KProcessHacker::GetHandleToPhysicalMemory()
 }
 
 
-/// <summary> Get physical memory layout information.</summary>
-/// <returns> bool: [true: success]</returns>
-bool KProcessHacker::GetPhysicalMemoryMappingInformation()
-{
-	reg::PKEY_VALUE_PARTIAL_INFORMATION buffer = nullptr;
-	if (!reg::Key::QueryRegistryKeyValue(KEY_PHYSICAL_MEMORY_MAP, KEY_PHYSICAL_MEMORY_MAP_VALUE_NAME, (void**)& buffer, reg::KeyValuePartialInformation))
-		return false;
-
-	pcm::PCM_FULL_RESOURCE_DESCRIPTOR pcmResDesc = ((pcm::PCM_RESOURCE_LIST)buffer->Data)->List;
-	pcm::PCM_PARTIAL_RESOURCE_LIST pcmPartialList = &(pcmResDesc[0].PartialResourceList);
-	pcm::PCM_PARTIAL_RESOURCE_DESCRIPTOR pcmResource = pcmPartialList->PartialDescriptors;
-
-	this->memoryMap.clear();
-
-	for (int i = 0; i < pcmPartialList->Count; i++)
-	{
-		switch (pcmResource[i].Type)
-		{
-		case pcm::CmResourceTypeMemory:
-			this->memoryMap.push_back(
-				MEMORY_MAP_ENTRY{ pcmResource[i].u.Memory.Start , pcmResource[i].u.Memory.Length }
-			);
-			break;
-
-		case pcm::CmResourceTypeMemoryLarge:
-			ULONG memorySize = pcmResource[i].u.Memory.Length;
-			if (CM_RESOURCE_MEMORY_LARGE_40(pcmResource[i].Flags))	// max len 0x0000 00FF FFFF FF00
-				memorySize = memorySize << 8;
-			if (CM_RESOURCE_MEMORY_LARGE_48(pcmResource[i].Flags))	// max len  0x0000 FFFF FFFF 0000
-				memorySize = memorySize << 16;
-			if (CM_RESOURCE_MEMORY_LARGE_64(pcmResource[i].Flags))	// max len 0xFFFF FFFF 0000 0000
-				memorySize = memorySize << 32;
-
-			this->memoryMap.push_back(MEMORY_MAP_ENTRY{ pcmResource[i].u.Memory.Start , memorySize });
-			break;
-		}
-	}
-
-	free(buffer);
-
-	if (this->memoryMap.size()) {
-		std::sort(this->memoryMap.begin(), this->memoryMap.end(),
-			[](MEMORY_MAP_ENTRY & a, const MEMORY_MAP_ENTRY & b) {
-				return a.RegionStart.QuadPart < b.RegionStart.QuadPart;
-			}
-		);
-
-		return true;
-	}
-	return false;
-}
-
 
 /// <summary> Map physical memory view to a processes virtual adress space </summary>
 /// <param name="hProcess"> handle to process physical memory is being mapped to </param>
@@ -133,7 +81,7 @@ bool KProcessHacker::NtMapPhysicalMemory(
 	LARGE_INTEGER		sectionOffset;
 
 	*mappedVirtualAddress = nullptr;
-	sectionOffset.QuadPart = (LONGLONG)physicalAddress;
+	sectionOffset.QuadPart = (uint64_t)physicalAddress;
 
 	if (!NT_SUCCESS(
 		NtMapViewOfSection(hPhysicalMemory, hProcess, mappedVirtualAddress, NULL,
@@ -154,7 +102,7 @@ bool KProcessHacker::NtMapPhysicalMemory(
 HANDLE_LIST	KProcessHacker::FindHandleByName(std::wstring handleName, int OwnerPID, DWORD desiredAccess)
 {
 	bool searchByOwnerPID = (OwnerPID < -1) ? false : true;
-	bool searchByDesiredAccess = (desiredAccess < -1) ? false : true;
+	bool searchByDesiredAccess = (desiredAccess <= -1) ? false : true;
 
 	HANDLE searchHandle = KPHOpenProcess(PROCESS_ALL_ACCESS, SYSTEM_PID);
 	if (searchHandle == INVALID_HANDLE_VALUE) return {};
@@ -340,16 +288,21 @@ bool KProcessHacker::KPHReadWritePhysicalAddress(void* physicalAddress, size_t s
 	//--------------------------------------------------------------
 	int i;
 	for (i = 0; i < memoryMap.size(); i++)
-		if ((LONGLONG)physicalAddress > MEMORY_MAP_END(i, memoryMap))
+		if ((uint64_t)physicalAddress > MEMORY_MAP_END(i, memoryMap))
 			continue;
 		else {
-			if ((LONGLONG)physicalAddress >= MEMORY_MAP_BASE(i, memoryMap) &&		// falls within a map region
-				((LONGLONG)physicalAddress + size) <= MEMORY_MAP_END(i, memoryMap))
+			if ((uint64_t)physicalAddress >= MEMORY_MAP_BASE(i, memoryMap) &&		// falls within a map region
+				((uint64_t)physicalAddress + size) <= MEMORY_MAP_END(i, memoryMap))
 			{
-				// Allign 8bytes boundary
-				LONGLONG	mapOffset = (LONGLONG)physicalAddress % MEMORY_READ_WRITE_ALIGNMENT;
-				void* mapBase = (void*)((LONGLONG)physicalAddress - mapOffset);
-				size_t	mapSize = size + mapOffset;
+				// Allign to page boundary
+				SYSTEM_INFO systemInfor;
+				GetSystemInfo(&systemInfor);
+
+				uint64_t	mapOffset = ((uint64_t)physicalAddress) % systemInfor.dwPageSize;
+				void*		mapBase = (void*)((uint64_t)physicalAddress - mapOffset);
+				size_t		mapSize = ((size / systemInfor.dwPageSize) * systemInfor.dwPageSize);
+
+				if (mapOffset) mapSize += systemInfor.dwPageSize;
 
 				PVOID	mappedVirtualAddress = nullptr;
 
@@ -359,9 +312,9 @@ bool KProcessHacker::KPHReadWritePhysicalAddress(void* physicalAddress, size_t s
 					return false;
 
 				if (read)
-					memcpy(inOutBuf, (void*)((LONGLONG)mappedVirtualAddress + mapOffset), size);
+					memcpy(inOutBuf, (void*)((uint64_t)mappedVirtualAddress + mapOffset), size);
 				else
-					memcpy((void*)((LONGLONG)mappedVirtualAddress + mapOffset), inOutBuf, size);
+					memcpy((void*)((uint64_t)mappedVirtualAddress + mapOffset), inOutBuf, size);
 
 				UnmapViewOfFile(mappedVirtualAddress);
 				return true;
@@ -372,6 +325,14 @@ bool KProcessHacker::KPHReadWritePhysicalAddress(void* physicalAddress, size_t s
 	return false;
 }
 
+
+bool KProcessHacker::ReadPhysicalAddr(void* physicalAddress, void* outBuffer, size_t size) {
+	return KPHReadWritePhysicalAddress(physicalAddress, size, outBuffer, true);
+}
+
+bool KProcessHacker::WritePhysicalAddr(void* physicalAddress, void* inBuffer, size_t size) {
+	return KPHReadWritePhysicalAddress(physicalAddress, size, inBuffer, false);
+}
 
 
 KProcessHacker::~KProcessHacker()

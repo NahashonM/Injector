@@ -67,17 +67,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Drivers\Driver.cs" />
-    <Compile Include="Forms\maingui.cs">
+    <Compile Include="MainUi\maingui.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\maingui.Designer.cs">
+    <Compile Include="MainUi\maingui.Designer.cs">
       <DependentUpon>maingui.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\ProcessPickerDialog.cs">
+    <Compile Include="MainUi\maingui_callbacks.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\ProcessPickerDialog.Designer.cs">
+    <Compile Include="MainUi\maingui_datagrid.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainUi\maingui_events.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProcessBrowser\ProcessPickerDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProcessBrowser\ProcessPickerDialog.Designer.cs">
       <DependentUpon>ProcessPickerDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Common.cs" />
@@ -85,16 +93,15 @@
     <Compile Include="TaskDispatch\Tasks.cs" />
     <Compile Include="Natives\NativePrivateImports.cs" />
     <Compile Include="Natives\NativeTypes.cs" />
-    <Compile Include="ProcessInterface\IProcess.cs" />
     <Compile Include="ProcessInterface\ProcessInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Natives\Natives.cs" />
     <Compile Include="TaskDispatch\TaskDescriptors.cs" />
-    <EmbeddedResource Include="Forms\maingui.resx">
+    <EmbeddedResource Include="MainUi\maingui.resx">
       <DependentUpon>maingui.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ProcessPickerDialog.resx">
+    <EmbeddedResource Include="ProcessBrowser\ProcessPickerDialog.resx">
       <DependentUpon>ProcessPickerDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -150,9 +157,6 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Drivers\cpuz\" />
-    <Folder Include="Drivers\kprocesshacker\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
