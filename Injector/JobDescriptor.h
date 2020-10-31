@@ -13,10 +13,10 @@ enum JOBTYPE {	Job_Inject, Job_Elevate, Job_Get_Process_Handles };
 
 
 typedef struct _HANDLE_NEW_ACCESS_ {
+public:
 	HANDLE		hValue;
-	ACCESS_MASK desiredAccess;
+	uint32_t	desiredAccess;
 }HANDLE_NEW_ACCESS;
-
 
 
 class JOBDESCRIPTOR
@@ -33,21 +33,21 @@ private:
 
 	std::string	injectionMethod;		// -m <summary> Injection Method to use </summary>
 
-	void*		injectionResources;		// -r <summary>List of path(s) to file(s) to be injected or handles to  be elevated </summary>
-
-
-	bool		ParseResourceValues(std::string rawString);
-
-	void		ParseHandleArguments(std::string rawString, PHANDLE hValue, ACCESS_MASK* desiredAccess);
-
-public:
 
 	std::vector<std::string>		filesList;
 	std::vector<HANDLE_NEW_ACCESS>	handlesList;
 
+	void* injectionResources;		// -r <summary>List of path(s) to file(s) to be injected or handles to  be elevated </summary>
 
-	JOBDESCRIPTOR() : isValidJob(false) {}
-	JOBDESCRIPTOR(const int argc, const char* argv[]) : isValidJob(false) { CommandLineParser(argc, argv); }
+
+	bool		ParseResourceValues(std::string rawString);
+
+	void		ParseHandleArguments(std::string rawString, PHANDLE hValue, uint32_t* desiredAccess);
+
+public:
+
+	JOBDESCRIPTOR() : isValidJob(false), handlesList({}) {}
+	JOBDESCRIPTOR(const int argc, const char* argv[]) : isValidJob(false), handlesList({}) { CommandLineParser(argc, argv); }
 
 	void CommandLineParser(const int argc, const char* argv[]);
 
@@ -89,7 +89,7 @@ public:
 
 	/// <summary> Returns a vector<sting> of files on the job.</summary>
 	/// <returns>std::vector<std::string></returns>
-	std::string		Files();
+	std::string		File( int index);
 
 	/// <summary> Returns a HANDLE_NEW_ACCESS of handles.</summary>
 	/// <returns> HANDLE_NEW_ACCESS</returns>

@@ -86,10 +86,12 @@ bool JOBDESCRIPTOR::ParseResourceValues(std::string rawString)
 
 		if (cIndex != pIndex) {
 			if (jobType == Job_Elevate) {
-				HANDLE hValue; ACCESS_MASK desiredAccess;
-				ParseHandleArguments( rawString.substr(cIndex, pIndex - cIndex).c_str(), &hValue, &desiredAccess);
+				HANDLE hValue; uint32_t desiredAccess;
+				ParseHandleArguments( 
+					rawString.substr((size_t)cIndex, (size_t)(pIndex - cIndex)).c_str(), 
+					&hValue, &desiredAccess);
 
-				if(hValue > 0 && desiredAccess >= 0 )
+				if (hValue > 0 && desiredAccess >= 0) 
 					handlesList.push_back({ hValue , desiredAccess });
 
 			} else if (jobType == Job_Inject) {
@@ -116,7 +118,7 @@ bool JOBDESCRIPTOR::ParseResourceValues(std::string rawString)
 /// <param name="rawString"> Raw handle string separated by a ';' </param>
 /// <param name="hValue"> _OUT_ [PHANDLE] Pointer to handle value </param>
 /// <param name="desiredAccess">  _OUT_ [ACCESS_MASK] pointer to desired access value </param>
-void JOBDESCRIPTOR::ParseHandleArguments(std::string rawString, PHANDLE hValue, ACCESS_MASK* desiredAccess)
+void JOBDESCRIPTOR::ParseHandleArguments(std::string rawString, PHANDLE hValue, uint32_t* desiredAccess)
 {
 	if (rawString.length() > 0)
 	{
@@ -128,7 +130,7 @@ void JOBDESCRIPTOR::ParseHandleArguments(std::string rawString, PHANDLE hValue, 
 			*desiredAccess = PROCESS_ALL_ACCESS;
 		} else {
 			*hValue = (HANDLE)atoi(rawString.substr(0,firstOfSC).c_str());
-			*desiredAccess  = (ACCESS_MASK)atoi(rawString.substr(firstOfSC+1).c_str());
+			*desiredAccess  = (uint32_t)atoi(rawString.substr(firstOfSC+1).c_str());
 		}
 	}else {
 		*hValue = 0;
@@ -150,6 +152,6 @@ bool		JOBDESCRIPTOR::ObtainHandleViaDriver() { return obtainHandleViaDriver; }
 std::string	JOBDESCRIPTOR::InjectionMethod() { return injectionMethod; }
 
 
-std::string			JOBDESCRIPTOR::Files() { return this->filesList[0];  }
+std::string			JOBDESCRIPTOR::File( int index ) { return this->filesList[index];  }
 HANDLE_NEW_ACCESS	JOBDESCRIPTOR::Handle(int index) { return handlesList[index]; }
 
