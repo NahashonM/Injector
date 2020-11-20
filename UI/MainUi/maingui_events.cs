@@ -14,11 +14,7 @@ namespace injector
 
 
 
-        private void Maingui_Load(object sender, EventArgs e)
-        {
 
-        }
-        
         
         /// <summary>
         /// OnForm closing evt.. Update user settings

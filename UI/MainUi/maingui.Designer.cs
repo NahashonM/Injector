@@ -89,7 +89,7 @@
             this.CustomTitleBar.Dock = System.Windows.Forms.DockStyle.Top;
             this.CustomTitleBar.Location = new System.Drawing.Point(0, 0);
             this.CustomTitleBar.Name = "CustomTitleBar";
-            this.CustomTitleBar.Size = new System.Drawing.Size(693, 41);
+            this.CustomTitleBar.Size = new System.Drawing.Size(788, 41);
             this.CustomTitleBar.TabIndex = 1;
             this.CustomTitleBar.MouseDown += new System.Windows.Forms.MouseEventHandler(this.CustomTitleBar_MouseDown);
             this.CustomTitleBar.MouseMove += new System.Windows.Forms.MouseEventHandler(this.CustomTitleBar_MouseMove);
@@ -110,6 +110,7 @@
             // rdElevationMode
             // 
             this.rdElevationMode.AutoSize = true;
+            this.rdElevationMode.Cursor = System.Windows.Forms.Cursors.Hand;
             this.rdElevationMode.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.rdElevationMode.Location = new System.Drawing.Point(90, 16);
             this.rdElevationMode.Name = "rdElevationMode";
@@ -122,6 +123,7 @@
             // rdInjectionMode
             // 
             this.rdInjectionMode.AutoSize = true;
+            this.rdInjectionMode.Cursor = System.Windows.Forms.Cursors.Hand;
             this.rdInjectionMode.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.rdInjectionMode.Location = new System.Drawing.Point(6, 16);
             this.rdInjectionMode.Name = "rdInjectionMode";
@@ -138,7 +140,7 @@
             this.btnMinimize.ErrorImage = global::injector.Properties.Resources.minimize_icon;
             this.btnMinimize.Image = global::injector.Properties.Resources.minimize_icon;
             this.btnMinimize.InitialImage = global::injector.Properties.Resources.minimize_icon;
-            this.btnMinimize.Location = new System.Drawing.Point(633, 0);
+            this.btnMinimize.Location = new System.Drawing.Point(728, 0);
             this.btnMinimize.Name = "btnMinimize";
             this.btnMinimize.Size = new System.Drawing.Size(30, 41);
             this.btnMinimize.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -165,7 +167,7 @@
             this.btnClose.ErrorImage = global::injector.Properties.Resources.close_icon1;
             this.btnClose.Image = global::injector.Properties.Resources.close_icon1;
             this.btnClose.InitialImage = global::injector.Properties.Resources.close_icon1;
-            this.btnClose.Location = new System.Drawing.Point(663, 0);
+            this.btnClose.Location = new System.Drawing.Point(758, 0);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(30, 41);
             this.btnClose.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -182,11 +184,12 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel1.Location = new System.Drawing.Point(0, 41);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(285, 275);
+            this.panel1.Size = new System.Drawing.Size(285, 337);
             this.panel1.TabIndex = 2;
             // 
             // btnInject
             // 
+            this.btnInject.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnInject.Location = new System.Drawing.Point(15, 238);
             this.btnInject.Name = "btnInject";
             this.btnInject.Size = new System.Drawing.Size(255, 31);
@@ -209,6 +212,7 @@
             // chkDriverObtainHandle
             // 
             this.chkDriverObtainHandle.AutoSize = true;
+            this.chkDriverObtainHandle.Cursor = System.Windows.Forms.Cursors.Hand;
             this.chkDriverObtainHandle.Location = new System.Drawing.Point(12, 16);
             this.chkDriverObtainHandle.Name = "chkDriverObtainHandle";
             this.chkDriverObtainHandle.Size = new System.Drawing.Size(85, 17);
@@ -219,6 +223,7 @@
             // chkUnloadAfterInject
             // 
             this.chkUnloadAfterInject.AutoSize = true;
+            this.chkUnloadAfterInject.Cursor = System.Windows.Forms.Cursors.Hand;
             this.chkUnloadAfterInject.Location = new System.Drawing.Point(133, 16);
             this.chkUnloadAfterInject.Name = "chkUnloadAfterInject";
             this.chkUnloadAfterInject.Size = new System.Drawing.Size(127, 17);
@@ -242,6 +247,7 @@
             // chkElevateHandle
             // 
             this.chkElevateHandle.AutoSize = true;
+            this.chkElevateHandle.Cursor = System.Windows.Forms.Cursors.Hand;
             this.chkElevateHandle.Location = new System.Drawing.Point(168, 41);
             this.chkElevateHandle.Name = "chkElevateHandle";
             this.chkElevateHandle.Size = new System.Drawing.Size(99, 17);
@@ -252,6 +258,7 @@
             // cboInjectionMethods
             // 
             this.cboInjectionMethods.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
+            this.cboInjectionMethods.Cursor = System.Windows.Forms.Cursors.Hand;
             this.cboInjectionMethods.FormattingEnabled = true;
             this.cboInjectionMethods.Location = new System.Drawing.Point(60, 15);
             this.cboInjectionMethods.Name = "cboInjectionMethods";
@@ -270,6 +277,7 @@
             // chkHijackHandle
             // 
             this.chkHijackHandle.AutoSize = true;
+            this.chkHijackHandle.Cursor = System.Windows.Forms.Cursors.Hand;
             this.chkHijackHandle.Location = new System.Drawing.Point(12, 41);
             this.chkHijackHandle.Name = "chkHijackHandle";
             this.chkHijackHandle.Size = new System.Drawing.Size(93, 17);
@@ -312,6 +320,7 @@
             // 
             // btnPickProcess
             // 
+            this.btnPickProcess.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnPickProcess.Location = new System.Drawing.Point(12, 83);
             this.btnPickProcess.Name = "btnPickProcess";
             this.btnPickProcess.Size = new System.Drawing.Size(255, 23);
@@ -356,7 +365,7 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel2.Location = new System.Drawing.Point(285, 41);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(408, 233);
+            this.panel2.Size = new System.Drawing.Size(503, 294);
             this.panel2.TabIndex = 3;
             // 
             // dtvFileSelections
@@ -424,7 +433,7 @@
             this.dtvFileSelections.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.dtvFileSelections.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dtvFileSelections.ShowCellToolTips = false;
-            this.dtvFileSelections.Size = new System.Drawing.Size(405, 227);
+            this.dtvFileSelections.Size = new System.Drawing.Size(500, 285);
             this.dtvFileSelections.TabIndex = 0;
             this.dtvFileSelections.DragDrop += new System.Windows.Forms.DragEventHandler(this.DtvFileSelections_DragDrop);
             this.dtvFileSelections.DragEnter += new System.Windows.Forms.DragEventHandler(this.DtvFileSelections_DragEnter);
@@ -436,13 +445,14 @@
             this.panel3.Controls.Add(this.btnDeleteFile);
             this.panel3.Controls.Add(this.btnAddFile);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel3.Location = new System.Drawing.Point(285, 279);
+            this.panel3.Location = new System.Drawing.Point(285, 341);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(408, 37);
+            this.panel3.Size = new System.Drawing.Size(503, 37);
             this.panel3.TabIndex = 4;
             // 
             // btnRefreshHandles
             // 
+            this.btnRefreshHandles.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnRefreshHandles.Location = new System.Drawing.Point(160, 8);
             this.btnRefreshHandles.Name = "btnRefreshHandles";
             this.btnRefreshHandles.Size = new System.Drawing.Size(104, 23);
@@ -453,6 +463,7 @@
             // 
             // btnDeleteFile
             // 
+            this.btnDeleteFile.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnDeleteFile.Location = new System.Drawing.Point(270, 8);
             this.btnDeleteFile.Name = "btnDeleteFile";
             this.btnDeleteFile.Size = new System.Drawing.Size(75, 23);
@@ -462,6 +473,7 @@
             // 
             // btnAddFile
             // 
+            this.btnAddFile.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnAddFile.Location = new System.Drawing.Point(79, 8);
             this.btnAddFile.Name = "btnAddFile";
             this.btnAddFile.Size = new System.Drawing.Size(75, 23);
@@ -475,7 +487,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.ClientSize = new System.Drawing.Size(693, 316);
+            this.ClientSize = new System.Drawing.Size(788, 378);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
@@ -484,7 +496,6 @@
             this.Name = "maingui";
             this.Text = "Inj3ct0r";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Maingui_FormClosing);
-            this.Load += new System.EventHandler(this.Maingui_Load);
             this.CustomTitleBar.ResumeLayout(false);
             this.grpMode.ResumeLayout(false);
             this.grpMode.PerformLayout();

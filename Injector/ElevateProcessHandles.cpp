@@ -114,6 +114,7 @@ void* HandleEntryAddress(HANDLE handle, void* tableCode, void* dirBase, Driver* 
 		case 3:						// Table is tertially
 
 			// table of pointers to tables of pointers of tables of entries
+			// Havent encountered anyone here yet so i return nullptrs
 			std::cout << "Table tertially: " << std::endl;
 
 			return nullptr;

@@ -42,8 +42,10 @@ namespace nt
 		SystemExtendedHandleInformation = 64 /* 64 */
 	} SYSTEM_INFORMATION_CLASS;
 
+
+
 	// System Object information
-	typedef enum _OBJECT_INFORMATION_CLASS
+	typedef enum _OBJECT_INFORMATION_CLASS : uint32_t
 	{
 		ObjectBasicInformation, ObjectNameInformation,
 		ObjectTypeInformation, ObjectAllTypesInformation,

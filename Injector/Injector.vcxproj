@@ -192,6 +192,7 @@
     <ClInclude Include="ntdefs.h" />
     <ClInclude Include="NtFunctions.h" />
     <ClInclude Include="NtTypes.h" />
+    <ClInclude Include="Objects.h" />
     <ClInclude Include="PhysicalMemoryRes.h" />
     <ClInclude Include="Registry.h" />
     <ClInclude Include="Util.h" />

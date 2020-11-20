@@ -82,6 +82,9 @@
     <Compile Include="MainUi\maingui_events.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="MainUi\maingui_taskdispatch.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="ProcessBrowser\ProcessPickerDialog.cs">
       <SubType>Form</SubType>
     </Compile>

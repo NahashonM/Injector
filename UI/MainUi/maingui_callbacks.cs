@@ -53,11 +53,11 @@ namespace injector
         /// <param name="handleValue">handle values [handle value ; granted access ; name]</param>
         private void AddNewHandleToList(string handleValue)
         {
-            // [	handle value ; granted access ; name	]
+            // [	handle value ; granted access ; type; name	]
             //------------------------------------------------
             string[] values = handleValue.Split(';');
 
-            if (values.Length == 3)
+            if (values.Length == 4)
             {
                
                 DataRow row = handleDataTable.NewRow();
@@ -71,7 +71,8 @@ namespace injector
                 }
 
                 row["elevate"] = false;                                     // bool
-                row["hName"] = values[2];                                   // string
+                row["hType"] = values[2];                                   // string
+                row["hName"] = values[3];                                   // string
 
                 handleDataTable.Rows.Add(row);
             }
@@ -89,6 +90,8 @@ namespace injector
             {
                 this.BeginInvoke(new Action(() => dtvFileSelections.Refresh()));
                 this.BeginInvoke(new Action(() => btnRefreshHandles.Enabled = true));
+
+                this.BeginInvoke(new Action(() => dtvFileSelections.ScrollBars = ScrollBars.Vertical));
             }
         }
 

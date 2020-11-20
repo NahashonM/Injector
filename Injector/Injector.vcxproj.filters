@@ -122,5 +122,8 @@
     <ClInclude Include="jobHandlers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Objects.h">
+      <Filter>Header Files\NtDefinitions\KERNEL STRUCTS</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

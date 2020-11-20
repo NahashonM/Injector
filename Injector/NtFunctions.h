@@ -38,7 +38,7 @@ namespace nt
 	/// <param name="ReturnLength"> Byte size written to the container or a suggestion of the required size  </param>
 	/// <returns> NTSTATUS 0:STATUS_SUCCESS</returns>
 	typedef NTSTATUS(NTAPI* _NtQueryObj)
-		(HANDLE ObjectHandle, DWORD ObjectInformationClass, PVOID ObjectInformation,
+		(HANDLE ObjectHandle, nt::OBJECT_INFORMATION_CLASS ObjectInformationClass, PVOID ObjectInformation,
 			DWORD ObjectInformationLength, LPDWORD ReturnLength);
 
 	/// <summary> Change an object's information via undocumented NtSetInformationObject  </summary>
@@ -48,7 +48,7 @@ namespace nt
 	/// <param name="Length">Length of the information container </param>
 	/// <returns> NTSTATUS 0:STATUS_SUCCESS</returns>
 	typedef NTSTATUS(NTAPI* _NtSetInforObj)							// _NtSetInformationObject
-		(HANDLE ObjectHandle, OBJECT_INFORMATION_CLASS ObjectInformationClass,
+		(HANDLE ObjectHandle, nt::OBJECT_INFORMATION_CLASS ObjectInformationClass,
 			PVOID ObjectInformation, ULONG Length);
 
 

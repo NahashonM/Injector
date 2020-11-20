@@ -22,6 +22,7 @@ namespace injector
             // Handles data table
             handleDataTable.Columns.Add("elevate", typeof(bool));
             handleDataTable.Columns.Add("hValue", typeof(string));
+            handleDataTable.Columns.Add("hType", typeof(string));
             handleDataTable.Columns.Add("hName", typeof(string));
             handleDataTable.Columns.Add("grAccess", typeof(string));
             handleDataTable.Columns.Add("dsAccess", typeof(string));
@@ -104,27 +105,39 @@ namespace injector
             dtvFileSelections.Columns[0].HeaderText = "";
             dtvFileSelections.Columns[0].Resizable = DataGridViewTriState.False;
             dtvFileSelections.Columns[0].Width = 20;
+            dtvFileSelections.Columns[0].Frozen = true;
 
             dtvFileSelections.Columns[1].HeaderText = "Handle";
             dtvFileSelections.Columns[1].Resizable = DataGridViewTriState.False;
             dtvFileSelections.Columns[1].MinimumWidth = 50;
             dtvFileSelections.Columns[1].Width = 50;
+            dtvFileSelections.Columns[1].Frozen = false;
             dtvFileSelections.Columns[1].ReadOnly = true;
 
-            dtvFileSelections.Columns[2].HeaderText = "Name";
+            dtvFileSelections.Columns[2].HeaderText = "Type";
             dtvFileSelections.Columns[2].Resizable = DataGridViewTriState.True;
-            dtvFileSelections.Columns[2].MinimumWidth = 150;
-            dtvFileSelections.Columns[2].Width = 200;
+            dtvFileSelections.Columns[2].MinimumWidth = 60;
+            dtvFileSelections.Columns[2].Width = 80;
+            dtvFileSelections.Columns[2].Frozen = false;
             dtvFileSelections.Columns[2].ReadOnly = true;
 
-            dtvFileSelections.Columns[3].HeaderText = "Access";
-            dtvFileSelections.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dtvFileSelections.Columns[3].HeaderText = "Name";
+            dtvFileSelections.Columns[3].Resizable = DataGridViewTriState.True;
+            dtvFileSelections.Columns[3].MinimumWidth = 120;
+            dtvFileSelections.Columns[3].Width = 150;
+            dtvFileSelections.Columns[3].Frozen = false;
             dtvFileSelections.Columns[3].ReadOnly = true;
 
-
-            dtvFileSelections.Columns[4].HeaderText = "N_Access";
+            dtvFileSelections.Columns[4].HeaderText = "Access";
             dtvFileSelections.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            dtvFileSelections.Columns[4].ReadOnly = false;
+            dtvFileSelections.Columns[4].ReadOnly = true;
+            dtvFileSelections.Columns[4].Frozen = false;
+
+
+            dtvFileSelections.Columns[5].HeaderText = "N_Access";
+            dtvFileSelections.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dtvFileSelections.Columns[5].ReadOnly = false;
+            dtvFileSelections.Columns[5].Frozen = false;
         }
 
 

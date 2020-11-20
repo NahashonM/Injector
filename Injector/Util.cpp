@@ -173,6 +173,44 @@ bool util::GetHandleInfor(HANDLE hHandle, DWORD ownerPID, nt::PSYSTEM_HANDLE_INF
 
 
 
+bool util::GetObjectInfor(HANDLE hObject, nt::OBJECT_INFORMATION_CLASS inforClass, void** hInforBuffer, LPDWORD returnLength)
+{
+	if (*hInforBuffer != nullptr)	return false;
+
+	
+
+	size_t		 bufferSize = 0;
+	NTSTATUS	 status = STATUS_SUCCESS;
+
+	nt::_NtQueryObj NtQueryObjectInfor = (nt::_NtQueryObj)util::GetExportFunctionAddress(L"ntdll.dll", "ZwQueryObject");
+	
+	if (NtQueryObjectInfor == nullptr) return false;
+	
+	do
+	{
+		bufferSize += 0x10000;
+		void* tempMem = realloc(*hInforBuffer, bufferSize);					// Allocate memory for the buffer
+		if (tempMem == nullptr) {										// avoid memory leaks
+			status = STATUS_UNSUCCESSFUL;  break;
+		}
+
+		*hInforBuffer = tempMem;
+		status = NtQueryObjectInfor(hObject, inforClass, *hInforBuffer, bufferSize, nullptr);
+
+	} while (status == STATUS_INFO_LENGTH_MISMATCH);
+
+
+	if (*hInforBuffer)
+		if (NT_SUCCESS(status)) {
+			if (returnLength != nullptr) * returnLength = bufferSize;
+			return true;
+		}
+		else { free(*hInforBuffer); if (returnLength != nullptr) * returnLength = 0; }
+
+	return false;
+}
+
+
 
 
 /// <summary> Gets address of an exported function in a system module </summary>

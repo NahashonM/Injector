@@ -34,13 +34,15 @@ namespace nt
 	} UNICODE_STRING, * PUNICODE_STRING;
 
 
-	// System Information Class 1
+	// System Object Information Class 1
 	typedef struct _OBJECT_NAME_INFORMATION
 	{
 		UNICODE_STRING Name;
 	} OBJECT_NAME_INFORMATION, * POBJECT_NAME_INFORMATION;
 
-	// System Information Class 2
+
+
+	// System Object Information Class 2
 	typedef struct _OBJECT_TYPE_INFORMATION	
 	{
 		UNICODE_STRING	TypeName;				// Name identifing the object type
@@ -60,6 +62,15 @@ namespace nt
 		ULONG			PagedPoolUsage;			// mount of paged pool used by objects of this type
 		ULONG			NonPagedPoolUsage;		//
 	} OBJECT_TYPE_INFORMATION, * POBJECT_TYPE_INFORMATION;
+
+
+
+	// System Object information class 3
+	typedef struct _OBJECT_ALL_TYPES_INFORMATION {
+		ULONG NumberOfObjectTypes;
+		OBJECT_TYPE_INFORMATION ObjectTypeInformation[1];
+	} OBJECT_ALL_TYPES_INFORMATION, * POBJECT_ALL_TYPES_INFORMATION;
+
 
 
 	// System Information Class 11

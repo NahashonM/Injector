@@ -80,6 +80,10 @@ namespace util
 	bool GetHandleInfor(HANDLE hHandle, DWORD ownerPID, nt::PSYSTEM_HANDLE_INFORMATION hInforBuffer);
 
 
+	bool GetObjectInfor(HANDLE hObject, nt::OBJECT_INFORMATION_CLASS ObjectInformationClass, 
+		void** hInforBuffer, LPDWORD returnLength);
+
+
 	/// <summary> Gets address of an exported function in a system module </summary>
 	/// <param name="moduleName"> Name of the module </param>
 	/// <param name="exportedFunction"> Name of the exported function </param>
