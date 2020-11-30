@@ -1,8 +1,18 @@
 # Injector
 
-![Process Picker](screenshots/processpicker.png "Process Picker") 
-![Library Injection mode](screenshots/ui_injection.png "Library Injector") 
-![Handle Elevation mode](screenshots/ui_elevation.png "Handle Elevate")
+<table>
+  <tr>
+    <td>Process Picker UI</td>
+     <td>Library Injection UI</td>
+     <td>Handle Elevation UI</td>
+  </tr>
+  <tr>
+    <td valign="top"><img src="screenshot/processpicker.png"></td>
+    <td valign="top"><img src="screenshot/ui_injection.png"></td>
+    <td valign="top"><img src="screenshot/ui_injection.png"></td>
+  </tr>
+ </table>
+ 
 
 Security tool for injecting libraries into executables and elevating processe handles
 
