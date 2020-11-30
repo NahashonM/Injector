@@ -30,7 +30,8 @@ Security tool for injecting libraries into executables and elevating processe ha
 * **Make sure the check box at the beginning of the handle entry is checked for both cases**
 * Click the Elevate Handle button <br>
 
-User confirmation if process has been elevated has not yet been implemented but can be verified using tools such as sysinternals process explorer
+User confirmation if process has been elevated has not yet been implemented but can be verified<br>
+using tools such as sysinternals process explorer or manually clicking the _Refresh Handle_ button
 
 ## Important Information
 * Handle elevation is implemented but has only been tested on windows 1903
