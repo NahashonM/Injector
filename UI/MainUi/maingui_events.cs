@@ -107,8 +107,12 @@ namespace injector
         {
             handleDataTable.Clear();
             btnRefreshHandles.Enabled = false;
-            Tasks.Task.QueryProcessHandles(SelectedProcess.Pid, AddNewHandleToList, TaskCompleteCallback);
-        }
+
+			RefreshProcessHandles();
+
+			btnRefreshHandles.Enabled = true;
+
+		}
 
 
 
@@ -144,22 +148,17 @@ namespace injector
         /// <param name="e"></param>
         private void BtnInject_Click(object sender, EventArgs e)
         {
-            int targetPid = 0;
-            try
-            {
-                targetPid = Int32.Parse(lblPid.Text.Substring(0, lblPid.Text.IndexOf(' ')));
-            }
-            catch (Exception)
-            {
-                MessageBox.Show("Please Select a process to inject into");
-                return;
-            }
+			if (SelectedProcess.Pid > 0) {
+				if (rdInjectionMode.Checked)
+					DispatchInjectionTask();
+				else
+					DispatchElevationTask();
 
-            if (rdInjectionMode.Checked)
-                DispatchInjectionTask(targetPid);
-            else
-                DispatchElevationTask(targetPid);
+				return;
+			}
 
+			MessageBox.Show("Please Select a process to inject into");
+			return;
         }
 
 

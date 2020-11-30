@@ -1,7 +1,9 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace injector.Forms
@@ -43,7 +45,9 @@ namespace injector.Forms
             procListView.DataSource = processData;
 
             SetProcessListViewStyle();
-        }
+
+			RefreshProcesses();
+		}
 
         
         /// <summary>
@@ -112,13 +116,15 @@ namespace injector.Forms
         {
             processData.Clear();
 
-            if (!Natives.GetListOfRunningProcesses(ProcessEnumeration_Callback))
-            {
-                MessageBox.Show("Cannot Get running process..!\nPlease check if you have admin privs..!");
-                this.Close();
-            }
+				Thread.CurrentThread.IsBackground = true;
+				if (!Natives.GetListOfRunningProcesses(ProcessEnumeration_Callback))
+				{
+					MessageBox.Show("Cannot Get running process..!\nPlease check if you have admin privs..!");
+					this.Close();
+				}
+			
 
-        }
+		}
 
         /// <summary>
         /// Get the selected row in the process data grid
@@ -185,7 +191,7 @@ namespace injector.Forms
 
         private void ProcessPickerDialog_Load(object sender, EventArgs e)
         {
-           RefreshProcesses();
+          
         }
 
         private void BtnClose_Click(object sender, EventArgs e)

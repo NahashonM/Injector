@@ -23,12 +23,10 @@ namespace injector
 
         
         ProcessInfo     SelectedProcess;                        // Process Picked by user
-        DataTable       fileDataTable;                         // Data source .. Files to be injected
-        DataTable       handleDataTable;                         // Data source .. Files to be injected
-        List<string>    InjectionMethods;                       // Data source .. Files to be injected
-        List<string>    AvailableDrivers;                       // Data source .. Files to be injected
-
-        
+        DataTable       fileDataTable;                          // Data source .. Files
+        DataTable       handleDataTable;                        // Data source .. ProcessHandles
+        List<string>    InjectionMethods;                       // Library Injection Techniques Available
+		        
 
         public maingui()
         {
@@ -36,13 +34,12 @@ namespace injector
 
             // Init global data
             SelectedProcess = new ProcessInfo();
-            AvailableDrivers = new List<string>();
             InjectionMethods = new List<string>();
             fileDataTable = new DataTable();
             handleDataTable = new DataTable();
 
             // Query available injection methods
-            Tasks.Task.QueryInjectionMethods(MethodIdentifiedCallback, TaskCompleteCallback);
+            //Tasks.Task.QueryInjectionMethods(MethodIdentifiedCallback, TaskCompleteCallback);
             cboInjectionMethods.DataSource = InjectionMethods;
 
             // Init data tables
@@ -93,5 +90,5 @@ namespace injector
 
             RdInjectionMode_CheckedChanged(null, null);
         }
-    }
+	}
 }

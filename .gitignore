@@ -1,5 +1,6 @@
 .vs
 bin/
+x64/
 UI/bin/
 UI/obj/
 Injector/bin/

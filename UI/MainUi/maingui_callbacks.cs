@@ -51,31 +51,20 @@ namespace injector
         /// Add a handle to the handle list
         /// </summary>
         /// <param name="handleValue">handle values [handle value ; granted access ; name]</param>
-        private void AddNewHandleToList(string handleValue)
+        private void NewHandleFound_Callback(UIntPtr handle, UInt32 accessMask, string type, string name)
         {
-            // [	handle value ; granted access ; type; name	]
-            //------------------------------------------------
-            string[] values = handleValue.Split(';');
+            DataRow row = handleDataTable.NewRow();
 
-            if (values.Length == 4)
-            {
-               
-                DataRow row = handleDataTable.NewRow();
+			row["elevate"] = false;                         // bool
+			row["hValue"] = ((UInt32)handle).ToString("X");	// string
+			row["hType"] = type;							// string
+			row["hName"] = name;							// string
+            row["grAccess"] = accessMask.ToString("X");		// uint
+            row["dsAccess"] = accessMask.ToString("X");     // uint
 
-                try {
-                    row["hValue"] = Int32.Parse(values[0]).ToString("X");   // string
-                    row["grAccess"] = Int32.Parse(values[1]).ToString("X"); //uint
-                    row["dsAccess"] = Int32.Parse(values[1]).ToString("X"); // uint
-                } catch (Exception)  {
-                    return;
-                }
-
-                row["elevate"] = false;                                     // bool
-                row["hType"] = values[2];                                   // string
-                row["hName"] = values[3];                                   // string
-
-                handleDataTable.Rows.Add(row);
-            }
+			this.BeginInvoke(new Action(() => handleDataTable.Rows.Add(row)));
+			
+            
         }
 
 
@@ -84,15 +73,14 @@ namespace injector
         /// </summary>
         /// <param name="task">Type of task</param>
         /// <param name="errorCode">Exit code</param>
-        private void TaskCompleteCallback(Tasks.TASK_MODE task, int errorCode)
+        private void TaskCompleteCallback()
         {
-            if(task == Tasks.TASK_MODE.QUERY_HANDLES)
-            {
+
                 this.BeginInvoke(new Action(() => dtvFileSelections.Refresh()));
                 this.BeginInvoke(new Action(() => btnRefreshHandles.Enabled = true));
 
                 this.BeginInvoke(new Action(() => dtvFileSelections.ScrollBars = ScrollBars.Vertical));
-            }
+            
         }
 
 
@@ -125,7 +113,6 @@ namespace injector
             // If different process was selected
             if (previousProcessPid != selectedProcess.Pid)
             {
-                Tasks.Task.CancelTask();                        // cancel any cancelable task
 
                 if (rdElevationMode.Checked) {
                     BtnRefreshHandles_Click(null, null);        // Refresh handles
@@ -138,7 +125,12 @@ namespace injector
 
         }
 
-    }
+
+
+
+
+
+	}
 
 
 }

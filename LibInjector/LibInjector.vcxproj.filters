@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Drivers">
+      <UniqueIdentifier>{d0c4f1c5-0bef-462a-b6c5-c0a6ce64678a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Drivers\cpuz">
+      <UniqueIdentifier>{15b43e16-2d55-42ee-80df-1859ea56c08b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Drivers\kprocesshacker">
+      <UniqueIdentifier>{be3ea67e-b7a6-4895-a68b-43c1c00f5c52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\kernel">
+      <UniqueIdentifier>{b561a9e5-8a41-4c81-b356-a9d9d8bbe7ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\kernel\structs">
+      <UniqueIdentifier>{08877393-72c8-4d24-b8eb-f6d9745513bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\kernel\functions">
+      <UniqueIdentifier>{bd05b7eb-5eff-4d48-83e7-62a26758f86e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Driver">
+      <UniqueIdentifier>{e852ff2e-d65d-4219-8dd4-728b164383a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\misc">
+      <UniqueIdentifier>{c62173e3-fbf3-487d-af68-47b44cf86bb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\workers">
+      <UniqueIdentifier>{3af8a5cd-0b24-4b6b-bc03-699f2e7d1337}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cpuzdrvr.cpp">
+      <Filter>Source Files\Driver</Filter>
+    </ClCompile>
+    <ClCompile Include="kprocesshacker.cpp">
+      <Filter>Source Files\Driver</Filter>
+    </ClCompile>
+    <ClCompile Include="Driver.cpp">
+      <Filter>Source Files\Driver</Filter>
+    </ClCompile>
+    <ClCompile Include="Registry.cpp">
+      <Filter>Source Files\misc</Filter>
+    </ClCompile>
+    <ClCompile Include="Util.cpp">
+      <Filter>Source Files\misc</Filter>
+    </ClCompile>
+    <ClCompile Include="elevateProcessHandles.cpp">
+      <Filter>Source Files\workers</Filter>
+    </ClCompile>
+    <ClCompile Include="getProcessHandles.cpp">
+      <Filter>Source Files\workers</Filter>
+    </ClCompile>
+    <ClCompile Include="injectLibraries.cpp">
+      <Filter>Source Files\workers</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="exports.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cpuz141_shellcode.h">
+      <Filter>Header Files\Drivers\cpuz</Filter>
+    </ClInclude>
+    <ClInclude Include="cpuzdrvr.h">
+      <Filter>Header Files\Drivers\cpuz</Filter>
+    </ClInclude>
+    <ClInclude Include="kph_types.h">
+      <Filter>Header Files\Drivers\kprocesshacker</Filter>
+    </ClInclude>
+    <ClInclude Include="kph_shellcode.h">
+      <Filter>Header Files\Drivers\kprocesshacker</Filter>
+    </ClInclude>
+    <ClInclude Include="kprocesshacker.h">
+      <Filter>Header Files\Drivers\kprocesshacker</Filter>
+    </ClInclude>
+    <ClInclude Include="Driver.h">
+      <Filter>Header Files\Drivers</Filter>
+    </ClInclude>
+    <ClInclude Include="ntdefs.h">
+      <Filter>Header Files\kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="Registry.h">
+      <Filter>Header Files\kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="eprocess.h">
+      <Filter>Header Files\kernel\structs</Filter>
+    </ClInclude>
+    <ClInclude Include="handle_table.h">
+      <Filter>Header Files\kernel\structs</Filter>
+    </ClInclude>
+    <ClInclude Include="InforClasses.h">
+      <Filter>Header Files\kernel\structs</Filter>
+    </ClInclude>
+    <ClInclude Include="NtFunctions.h">
+      <Filter>Header Files\kernel\functions</Filter>
+    </ClInclude>
+    <ClInclude Include="NtTypes.h">
+      <Filter>Header Files\kernel\structs</Filter>
+    </ClInclude>
+    <ClInclude Include="Objects.h">
+      <Filter>Header Files\kernel\structs</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicalMemoryRes.h">
+      <Filter>Header Files\kernel\structs</Filter>
+    </ClInclude>
+    <ClInclude Include="Util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

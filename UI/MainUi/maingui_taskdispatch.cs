@@ -21,26 +21,27 @@ namespace injector
         /// </summary>
         /// <param name="pid"></param>
         /// <returns></returns>
-        private bool DispatchElevationTask(int pid)
+        private bool DispatchElevationTask()
         {
 
-            List<Tasks.NewHandleValue> handleList = new List<Tasks.NewHandleValue> { };
+			var tm = new Tasks.ElevateHandles();
+			tm.processID = (int)SelectedProcess.Pid;
 
             foreach (DataRow row in handleDataTable.Rows)
             {
                 if ((bool)row["elevate"] == true)
                 {
-                    IntPtr handleValue = IntPtr.Zero;
-                    int accessMask = -1;
+                    UIntPtr handleValue = UIntPtr.Zero;
+                    uint accessMask = 0;
                     uint previousAccessMask = 0;
 
                     try
                     {
-                        handleValue = (IntPtr)((IntPtr.Size == 4) ?
+                        handleValue = (UIntPtr)((IntPtr.Size == 4) ?
                                               UInt32.Parse((string)row["hValue"], NumberStyles.HexNumber) :
                                               UInt64.Parse((string)row["hValue"], NumberStyles.HexNumber));
 
-                        accessMask = Int32.Parse((string)row["dsAccess"], NumberStyles.HexNumber);
+                        accessMask = UInt32.Parse((string)row["dsAccess"], NumberStyles.HexNumber);
                         previousAccessMask = UInt32.Parse((string)row["grAccess"], NumberStyles.HexNumber);
                     }
                     catch (FormatException e)
@@ -48,29 +49,23 @@ namespace injector
                         continue;
                     }
 
+					tm.handles.Add(handleValue);
 
-                    handleList.Add(new Tasks.NewHandleValue()
-                    {
-                        hValue = handleValue,
-                        AcessMask = (uint)((accessMask == previousAccessMask || accessMask >= 0) ? 0x1fffff : accessMask)
-                    });
+					accessMask = (accessMask == 0) ? 0x01: accessMask;
+					tm.newAccessMasks.Add( (uint)((accessMask == previousAccessMask) ? 0x1fffff : accessMask));
                 }
             }
 
 
-            if (handleList.Count() < 1)
+            if (tm.handles.Count < 1)
             {
                 MessageBox.Show("Please Select handle(s) to elevate");
                 return false;
             }
 
-            Tasks.ElevationModel elevationModel = new Tasks.ElevationModel
-            {
-                ProcessID = pid,
-                Handles = handleList
-            };
+			TaskManager.StartTask(tm.taskID);
 
-            return Tasks.Task.StartTask(elevationModel);
+			return true;
         }
 
         #endregion
@@ -82,45 +77,48 @@ namespace injector
         /// Calls for dispatch of injection task
         /// </summary>
         /// <param name="pid"></param>
-        private void DispatchInjectionTask(int pid)
+        private void DispatchInjectionTask()
         {
-            List<string> files = new List<string> { };
+			var tm = new Tasks.InjectLibrary();
+			tm.processID = (int)SelectedProcess.Pid;
+
             foreach (DataRow row in fileDataTable.Rows)
             {
-                if ((bool)row["inject"] == true && (string)row["fileArch"] == lblArch.Text)
-                    files.Add(row["filePath"].ToString());
+				if ((bool)row["inject"] == true && (string)row["fileArch"] == lblArch.Text)
+					tm.libraryFiles.Add(row["filePath"].ToString());
             }
 
 
-            if (files.Count() < 1)
+            if (tm.libraryFiles.Count() < 1)
             {
                 MessageBox.Show("Please Add files to inject");
                 return;
             }
 
-            Tasks.InjectionModel injectionModel = new Tasks.InjectionModel
-            {
-                TargetPid = pid,
-                TargetArchitecture = lblArch.Text,
-                InjectionMethod = cboInjectionMethods.SelectedValue?.ToString(),
-                HijackHandle = chkHijackHandle.Checked,
-                ElevateHandle = chkElevateHandle.Checked,
-                ObtainHandleViaDriver = chkDriverObtainHandle.Checked,
-                UnloadOnInject = chkUnloadAfterInject.Checked,
-                FilesList = files
-            };
+			TaskManager.StartTask(tm.taskID);
 
-            Tasks.Task.StartTask(injectionModel);
-
-            return;
+			return;
         }
 
-        #endregion
+		#endregion
+
+
+		#region GET_HANDLES
+
+		public void RefreshProcessHandles()
+		{
+			var tm = new Tasks.QueryHandles((int)SelectedProcess.Pid);
+			tm.fnHandleFound = NewHandleFound_Callback;
+
+			TaskManager.StartTask(tm.taskID);
+
+		}
+		#endregion // GET_HANDLES
 
 
 
 
-    }
+	}
 
 
 

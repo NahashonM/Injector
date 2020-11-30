@@ -300,13 +300,9 @@ bool KProcessHacker::KPHReadWritePhysicalAddress(void* physicalAddress, size_t s
 
 				uint64_t	mapOffset = ((uint64_t)physicalAddress) % systemInfor.dwPageSize;
 				void*		mapBase = (void*)((uint64_t)physicalAddress - mapOffset);
-				size_t		mapSize = ((size / systemInfor.dwPageSize) * systemInfor.dwPageSize);
-
-				if (mapOffset) mapSize += systemInfor.dwPageSize;
-
-				PVOID	mappedVirtualAddress = nullptr;
-
-				ULONG	protection = (read) ? PAGE_READONLY : PAGE_READWRITE;
+				uint64_t	mapSize = size + mapOffset;
+				PVOID		mappedVirtualAddress = nullptr;
+				ULONG		protection = (read) ? PAGE_READONLY : PAGE_READWRITE;
 
 				if (!NtMapPhysicalMemory(GetCurrentProcess(), mapBase, &mapSize, &mappedVirtualAddress, protection))
 					return false;
